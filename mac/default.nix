@@ -4,6 +4,12 @@
   # Make sure the nix daemon always runs
   services.nix-daemon.enable = true;
   programs.zsh.enable = true;
+  nix.settings = {
+    allowed-users = ["@admin" "patrick"];
+    auto-optimise-store = true;
+    substituters = ["https://nix-community.cachix.org"" https://cache.nixos.org"];
+    settings.trusted-public-keys = ["nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="];
+  };
   # Installs a version of nix, that dosen't need "experimental-features = nix-command flakes" in /etc/nix/nix.conf
   # services.nix-daemon.package = pkgs.nixFlakes;
 
