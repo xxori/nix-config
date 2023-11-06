@@ -20,6 +20,10 @@
       "mactex-no-gui"
       "wineskin"
       "iina"
+      "gpg-suite-no-mail"
+      "obsidian"
+      "steam"
+      "spotify"
     ];
   };
 
