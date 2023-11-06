@@ -1,7 +1,6 @@
 { pkgs, ... }:
 {
 
-  # Make sure the nix daemon always runs
   services.nix-daemon.enable = true;
   programs.zsh.enable = true;
   nix.settings = {
@@ -9,11 +8,9 @@
     auto-optimise-store = true;
     substituters = [ "https://nix-community.cachix.org" " https://cache.nixos.org" ];
     trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
-    trusted-substituters = [ "https://nix-community.cachix.org" "https://cache.nixos.org https://cache.nixos.org/" ];
+    trusted-substituters = [ "https://cache.nixos.org" "https://nix-community.cachix.org" ];
   };
   nix.extraOptions = "experimental-features = nix-command flakes repl-flake";
-  # Installs a version of nix, that dosen't need "experimental-features = nix-command flakes" in /etc/nix/nix.conf
-  # services.nix-daemon.package = pkgs.nixFlakes;
 
   homebrew = {
     enable = true;
@@ -62,8 +59,7 @@
       # release notes.
       home.stateVersion = "23.05"; # Please read the comment before changing.
 
-      # The home.packages option allows you to install Nix packages into your
-      # environment.
+      # Some of these should probably be system packages...
       home.packages = with pkgs; [
         rnix-lsp
         android-tools
@@ -87,7 +83,6 @@
         zsh-autocomplete
         tmux
         fd
-        zsh-fzf-tab
         (vscode-with-extensions.override {
           vscodeExtensions = with vscode-extensions; [
             vscodevim.vim
@@ -154,16 +149,6 @@
         # '';
       };
 
-      # You can also manage environment variables but you will have to manually
-      # source
-      #
-      #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-      #
-      # or
-      #
-      #  /etc/profiles/per-user/patrick/etc/profile.d/hm-session-vars.sh
-      #
-      # if you don't want to manage your shell through Home Manager.
       home.sessionVariables = {
         XDG_CONFIG_HOME = "$HOME/.config";
         XDG_DATA_HOME = "$HOME/.local/share";
@@ -199,9 +184,12 @@
         if [ -n "''${commands[fzf-share]}" ]; then
         source "$(fzf-share)/key-bindings.zsh"
         source "$(fzf-share)/completion.zsh"
-        fi
-        source "${pkgs.zsh-fzf-tab.outPath}/share/fzf-tab/fzf-tab.plugin.zsh"  
+        fi 
+        source "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh" 
+        source "${pkgs.zsh-f-sy-h}/share/zsh/site-functions/F-Sy-H.plugin.zsh"
+        source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
       '';
+      # ^ This will pull the zsh plugins automatically. Alternatively, we could use zsh.antidote
       programs.zsh.shellAliases = {
         ls = "lsd -a --color=auto";
         tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
