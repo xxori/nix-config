@@ -5,11 +5,13 @@
   services.nix-daemon.enable = true;
   programs.zsh.enable = true;
   nix.settings = {
-    allowed-users = ["@admin" "patrick"];
+    allowed-users = [ "@admin" "patrick" ];
     auto-optimise-store = true;
-    substituters = ["https://nix-community.cachix.org"" https://cache.nixos.org"];
-    trusted-public-keys = ["nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="];
+    substituters = [ "https://nix-community.cachix.org" " https://cache.nixos.org" ];
+    trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
+    trusted-substituters = [ "https://nix-community.cachix.org" "https://cache.nixos.org https://cache.nixos.org/" ];
   };
+  nix.extraOptions = "experimental-features = nix-command flakes repl-flake";
   # Installs a version of nix, that dosen't need "experimental-features = nix-command flakes" in /etc/nix/nix.conf
   # services.nix-daemon.package = pkgs.nixFlakes;
 
@@ -68,6 +70,7 @@
         gleam
         exercism
         ffmpeg
+        coreutils-prefixed
         neovim
         bun
         nodejs
@@ -82,7 +85,42 @@
         pure-prompt
         lsd
         zsh-autocomplete
-
+        tmux
+        fd
+        zsh-fzf-tab
+        (vscode-with-extensions.override {
+          vscodeExtensions = with vscode-extensions; [
+            vscodevim.vim
+            rust-lang.rust-analyzer
+            serayuzgur.crates
+            svelte.svelte-vscode
+            ms-python.python
+            ms-python.vscode-pylance
+            esbenp.prettier-vscode
+            christian-kohler.path-intellisense
+            jnoortheen.nix-ide
+            ms-vscode.live-server
+            gleam.gleam
+            eamodio.gitlens
+            github.copilot
+            github.copilot-chat
+            tamasfe.even-better-toml
+            ms-python.black-formatter
+          ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+            {
+              name = "prettier-sql-vscode";
+              publisher = "inferrinizzard";
+              version = "1.6.0";
+              sha256 = "l6pf/+uv8Bn4uDMX0CbzSjydTStr73uRY550Ad9wm7Q=";
+            }
+            {
+              name = "vscodeintellicode";
+              publisher = "VisualStudioExptTeam";
+              version = "1.2.30";
+              sha256 = "f2Gn+W0QHN8jD5aCG+P93Y+JDr/vs2ldGL7uQwBK4lE=";
+            }
+          ];
+        })
 
         # # It is sometimes useful to fine-tune packages, for example, by applying
         # # overrides. You can do that directly here, just don't forget the
@@ -99,6 +137,7 @@
       ] ++ (with pkgs.python311Packages; [
         pip
       ]);
+
 
       # Home Manager is pretty good at managing dotfiles. The primary way to manage
       # plain files is through 'home.file'.
@@ -156,6 +195,12 @@
         fpath+=("$(brew --prefix)/share/zsh/site-functions")
         prompt pure
         zstyle :prompt:pure:path color cyan
+        export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
+        if [ -n "''${commands[fzf-share]}" ]; then
+        source "$(fzf-share)/key-bindings.zsh"
+        source "$(fzf-share)/completion.zsh"
+        fi
+        source "${pkgs.zsh-fzf-tab.outPath}/share/fzf-tab/fzf-tab.plugin.zsh"  
       '';
       programs.zsh.shellAliases = {
         ls = "lsd -a --color=auto";
@@ -164,9 +209,8 @@
         gpg = "gpg --homedir $XDG_DATA_HOME/gnupg";
         dr = "darwin-rebuild switch --flake ~s/nix-config/";
       };
-      programs.zsh.history = {
-        path = "$XDG_STATE_HOME/zsh/history";
-      };
+      programs.zsh.history.path = "$XDG_STATE_HOME/zsh/history";
+
       programs.zsh.dirHashes = {
         n = "$HOME/Documents/notes";
         c = "$HOME/.config";
