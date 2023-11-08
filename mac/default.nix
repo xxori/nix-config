@@ -17,6 +17,8 @@
     onActivation.autoUpdate = false;
     casks = [
       # GUI Apps
+      "tailscale"
+      "discord"
       "sioyek"
       "qbittorrent"
       "raycast"
@@ -83,6 +85,7 @@
         zsh-autocomplete
         tmux
         fd
+        mkcert
         (vscode-with-extensions.override {
           vscodeExtensions = with vscode-extensions; [
             vscodevim.vim
@@ -101,6 +104,7 @@
             github.copilot-chat
             tamasfe.even-better-toml
             ms-python.black-formatter
+            github.vscode-pull-request-github
           ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
             {
               name = "prettier-sql-vscode";
@@ -170,6 +174,8 @@
         JUPYTER_PLATFORM_DIRS = "1";
         PATH = "$HOME/.local/bin:$PATH:/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin";
       };
+      programs.vscode.enable = true;
+      programs.vscode.userSettings = builtins.fromJSON (builtins.readFile ./vscode-settings.json);
       programs.zsh.enable = true;
       programs.zsh.dotDir = ".config/zsh";
       programs.zsh.initExtra = ''
@@ -185,6 +191,7 @@
         source "$(fzf-share)/key-bindings.zsh"
         source "$(fzf-share)/completion.zsh"
         fi 
+        source "$SCRIPTS/iterm2_shell_integration.zsh"
         source "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh" 
         source "${pkgs.zsh-f-sy-h}/share/zsh/site-functions/F-Sy-H.plugin.zsh"
         source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
