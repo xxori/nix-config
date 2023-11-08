@@ -86,40 +86,6 @@
         tmux
         fd
         mkcert
-        (vscode-with-extensions.override {
-          vscodeExtensions = with vscode-extensions; [
-            vscodevim.vim
-            rust-lang.rust-analyzer
-            serayuzgur.crates
-            svelte.svelte-vscode
-            ms-python.python
-            ms-python.vscode-pylance
-            esbenp.prettier-vscode
-            christian-kohler.path-intellisense
-            jnoortheen.nix-ide
-            ms-vscode.live-server
-            gleam.gleam
-            eamodio.gitlens
-            github.copilot
-            github.copilot-chat
-            tamasfe.even-better-toml
-            ms-python.black-formatter
-            github.vscode-pull-request-github
-          ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-            {
-              name = "prettier-sql-vscode";
-              publisher = "inferrinizzard";
-              version = "1.6.0";
-              sha256 = "l6pf/+uv8Bn4uDMX0CbzSjydTStr73uRY550Ad9wm7Q=";
-            }
-            {
-              name = "vscodeintellicode";
-              publisher = "VisualStudioExptTeam";
-              version = "1.2.30";
-              sha256 = "f2Gn+W0QHN8jD5aCG+P93Y+JDr/vs2ldGL7uQwBK4lE=";
-            }
-          ];
-        })
 
         # # It is sometimes useful to fine-tune packages, for example, by applying
         # # overrides. You can do that directly here, just don't forget the
@@ -174,8 +140,7 @@
         JUPYTER_PLATFORM_DIRS = "1";
         PATH = "$HOME/.local/bin:$PATH:/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin";
       };
-      programs.vscode.enable = true;
-      programs.vscode.userSettings = builtins.fromJSON (builtins.readFile ./vscode-settings.json);
+
       programs.zsh.enable = true;
       programs.zsh.dotDir = ".config/zsh";
       programs.zsh.initExtra = ''
@@ -194,9 +159,9 @@
         source "$SCRIPTS/iterm2_shell_integration.zsh"
         source "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh" 
         source "${pkgs.zsh-f-sy-h}/share/zsh/site-functions/F-Sy-H.plugin.zsh"
-        source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
-      '';
+        source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh'';
       # ^ This will pull the zsh plugins automatically. Alternatively, we could use zsh.antidote
+
       programs.zsh.shellAliases = {
         ls = "lsd -a --color=auto";
         tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
@@ -217,6 +182,59 @@
         h = "$HOME/OrbStack/arch/home/patrick";
         e = "$HOME/source/exercism";
       };
+
+      programs.wezterm.enable = true;
+      programs.wezterm.extraConfig = ''
+        local wezterm = require 'wezterm'
+
+        local config = {}
+
+        if wezterm.config_builder then
+        config = wezterm.config_builder()
+        end
+
+        config.font = wezterm.font("BerkeleyMono Nerd Font")
+        config.font_size = 12.0
+        config.color_scheme = 'synthwave'
+
+        return config
+      '';
+      programs.vscode.enable = true;
+      programs.vscode.extensions = with pkgs.vscode-extensions; [
+        vscodevim.vim
+        rust-lang.rust-analyzer
+        serayuzgur.crates
+        svelte.svelte-vscode
+        ms-python.python
+        ms-python.vscode-pylance
+        esbenp.prettier-vscode
+        christian-kohler.path-intellisense
+        jnoortheen.nix-ide
+        ms-vscode.live-server
+        gleam.gleam
+        eamodio.gitlens
+        github.copilot
+        github.copilot-chat
+        tamasfe.even-better-toml
+        ms-python.black-formatter
+        github.vscode-pull-request-github
+        dracula-theme.theme-dracula
+      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+        {
+          name = "prettier-sql-vscode";
+          publisher = "inferrinizzard";
+          version = "1.6.0";
+          sha256 = "l6pf/+uv8Bn4uDMX0CbzSjydTStr73uRY550Ad9wm7Q=";
+        }
+        {
+          name = "vscodeintellicode";
+          publisher = "VisualStudioExptTeam";
+          version = "1.2.30";
+          sha256 = "f2Gn+W0QHN8jD5aCG+P93Y+JDr/vs2ldGL7uQwBK4lE=";
+        }
+      ];
+      programs.vscode.userSettings = builtins.fromJSON (builtins.readFile "./vscode-settings.json");
+
 
       # Let Home Manager install and manage itself.
       programs.home-manager.enable = true;
