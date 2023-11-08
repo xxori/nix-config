@@ -144,6 +144,7 @@
       programs.zsh.enable = true;
       programs.zsh.dotDir = ".config/zsh";
       programs.zsh.initExtra = ''
+        #sh
         . $CARGO_HOME/env
         source $HOME/.orbstack/shell/init.zsh 2>/dev/null || :
         eval $(/opt/homebrew/bin/brew shellenv)
@@ -159,7 +160,9 @@
         source "$SCRIPTS/iterm2_shell_integration.zsh"
         source "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh" 
         source "${pkgs.zsh-f-sy-h}/share/zsh/site-functions/F-Sy-H.plugin.zsh"
-        source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh'';
+        source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+        #/sh
+        '';
       # ^ This will pull the zsh plugins automatically. Alternatively, we could use zsh.antidote
 
       programs.zsh.shellAliases = {
@@ -185,6 +188,7 @@
 
       programs.wezterm.enable = true;
       programs.wezterm.extraConfig = ''
+        --lua
         local wezterm = require 'wezterm'
 
         local config = {}
@@ -195,11 +199,18 @@
 
         config.font = wezterm.font("BerkeleyMono Nerd Font")
         config.font_size = 12.0
-        config.color_scheme = 'synthwave'
+        -- config.color_scheme = "synthwave"
+        config.color_scheme = "Tokyo Night"
+        config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+        config.integrated_title_button_style = "MacOsNative"
+        config.window_background_opacity = 0.9
+
 
         return config
+        --/lua
       '';
       programs.vscode.enable = true;
+      programs.vscode.mutableExtensionsDir = false;
       programs.vscode.extensions = with pkgs.vscode-extensions; [
         vscodevim.vim
         rust-lang.rust-analyzer
@@ -219,6 +230,20 @@
         ms-python.black-formatter
         github.vscode-pull-request-github
         dracula-theme.theme-dracula
+        sumneko.lua
+        (pkgs.vscode-utils.buildVscodeExtension {
+          name = "xxori-nix-embedded-langs-0.0.1";
+          version = "0.0.1";
+          src = builtins.fetchurl {
+            url = "https://github.com/xxori/nix-embedded-langs-vscode/releases/download/v0.0.1/nix-embedded-langs-0.0.1.vsix";
+            sha256 = "cddc72771b7816ad3f4b8ec8f3278748a0b52825dc4e5ec6e9b0bc0d58100c67";
+            # A vsix file is just a zip, but we dont know how to extract it, so we rename it to .zip
+            name = "xxori-nix-embedded-langs.zip";
+          };
+          vscodeExtPublisher = "xxori";
+          vscodeExtName = "nix-embedded-langs";
+          vscodeExtUniqueId = "xxori.nix-embedded-langs";
+        })
       ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
           name = "prettier-sql-vscode";
@@ -233,7 +258,7 @@
           sha256 = "f2Gn+W0QHN8jD5aCG+P93Y+JDr/vs2ldGL7uQwBK4lE=";
         }
       ];
-      programs.vscode.userSettings = builtins.fromJSON (builtins.readFile "./vscode-settings.json");
+      programs.vscode.userSettings = builtins.fromJSON (builtins.readFile ./vscode-settings.json);
 
 
       # Let Home Manager install and manage itself.
