@@ -86,6 +86,7 @@
         tmux
         fd
         mkcert
+        texlive.combined.scheme-medium
 
         # # It is sometimes useful to fine-tune packages, for example, by applying
         # # overrides. You can do that directly here, just don't forget the
@@ -171,6 +172,8 @@
         wget = "wget --hsts-file=$XDG_CACHE_HOME/wget-hsts";
         gpg = "gpg --homedir $XDG_DATA_HOME/gnupg";
         dr = "darwin-rebuild switch --flake ~s/nix-config/";
+        nix-stray-roots = "nix-store --gc --print-roots | egrep -v '^(/nix/var|/run/\w+-system|\{memory)'";
+
       };
       programs.zsh.history.path = "$XDG_STATE_HOME/zsh/history";
 
@@ -222,6 +225,7 @@
         christian-kohler.path-intellisense
         jnoortheen.nix-ide
         ms-vscode.live-server
+        github.vscode-github-actions
         gleam.gleam
         eamodio.gitlens
         github.copilot
