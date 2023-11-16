@@ -30,7 +30,9 @@
       "gpg-suite-no-mail"
       "obsidian"
       "steam"
+      "calibre"
       "spotify"
+      "android-studio"
     ];
   };
 
@@ -38,6 +40,14 @@
     name = "patrick";
     home = "/Users/patrick";
   };
+  environment.systemPackages = with pkgs; [
+    (python311.withPackages
+      (ps: with ps; [
+        pip
+        meson
+        ninja
+      ]))
+  ];
   # home-manager.useGlobalPkgs = true;
   # home-manager.useUserPackages = true;
   home-manager.users.patrick = { config, pkgs, ... }:
@@ -77,7 +87,6 @@
         hugo
         ncdu
         wget
-        python311
         fh
         fzf
         pure-prompt
@@ -87,7 +96,11 @@
         fd
         mkcert
         texlive.combined.scheme-medium
-
+        typst
+        typst-fmt
+        zola
+        flutter
+        cocoapods
         # # It is sometimes useful to fine-tune packages, for example, by applying
         # # overrides. You can do that directly here, just don't forget the
         # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -100,9 +113,7 @@
         # (pkgs.writeShellScriptBin "my-hello" ''
         #   echo "Hello, ${config.home.username}!"
         # '')
-      ] ++ (with pkgs.python311Packages; [
-        pip
-      ]);
+      ];
 
 
       # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -163,7 +174,7 @@
         source "${pkgs.zsh-f-sy-h}/share/zsh/site-functions/F-Sy-H.plugin.zsh"
         source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
         #/sh
-        '';
+      '';
       # ^ This will pull the zsh plugins automatically. Alternatively, we could use zsh.antidote
 
       programs.zsh.shellAliases = {
@@ -235,6 +246,8 @@
         github.vscode-pull-request-github
         dracula-theme.theme-dracula
         sumneko.lua
+        nvarner.typst-lsp
+        dart-code.flutter
         (pkgs.vscode-utils.buildVscodeExtension {
           name = "xxori-nix-embedded-langs-0.0.1";
           version = "0.0.1";
@@ -250,6 +263,12 @@
         })
       ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
+          name = "vsliveshare";
+          publisher = "ms-vsliveshare";
+          version = "1.0.5892";
+          sha256 = "e/cJONR/4Lai18h7kHJU8UEn5yrUZHPoITAyZpLenTA=";
+        }
+        {
           name = "prettier-sql-vscode";
           publisher = "inferrinizzard";
           version = "1.6.0";
@@ -260,6 +279,12 @@
           publisher = "VisualStudioExptTeam";
           version = "1.2.30";
           sha256 = "f2Gn+W0QHN8jD5aCG+P93Y+JDr/vs2ldGL7uQwBK4lE=";
+        }
+        {
+          name = "vscode-thunder-client";
+          publisher = "rangav";
+          version = "2.15.3";
+          sha256 = "pn/wzehVQPk0Jck+1QFz508+5t8ToZiZ/UUiGwlB05M=";
         }
       ];
       programs.vscode.userSettings = builtins.fromJSON (builtins.readFile ./vscode-settings.json);
