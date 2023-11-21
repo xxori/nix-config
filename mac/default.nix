@@ -1,17 +1,17 @@
-{ pkgs, ... }:
+{ pkgs, rust-overlay, ... }:
 {
 
   services.nix-daemon.enable = true;
   programs.zsh.enable = true;
   nix.settings = {
+    trusted-users = [ "root" "patrick" ];
     allowed-users = [ "@admin" "patrick" ];
     auto-optimise-store = true;
-    substituters = [ "https://nix-community.cachix.org" " https://cache.nixos.org" ];
-    trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" ];
+    substituters = [ "https://cache.nixos.org" "https://nix-community.cachix.org" ];
+    trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
     trusted-substituters = [ "https://cache.nixos.org" "https://nix-community.cachix.org" ];
   };
   nix.extraOptions = "experimental-features = nix-command flakes repl-flake";
-
   homebrew = {
     enable = true;
     onActivation.autoUpdate = false;
@@ -19,7 +19,6 @@
       # GUI Apps
       "tailscale"
       "discord"
-      "sioyek"
       "qbittorrent"
       "raycast"
       "prismlauncher"
@@ -40,14 +39,7 @@
     name = "patrick";
     home = "/Users/patrick";
   };
-  environment.systemPackages = with pkgs; [
-    (python311.withPackages
-      (ps: with ps; [
-        pip
-        meson
-        ninja
-      ]))
-  ];
+
   # home-manager.useGlobalPkgs = true;
   # home-manager.useUserPackages = true;
   home-manager.users.patrick = { config, pkgs, ... }:
@@ -61,6 +53,8 @@
 
       # Allow unfree software
       nixpkgs.config.allowUnfree = true;
+      nixpkgs.overlays = [ rust-overlay.overlays.default ];
+
 
       # This value determines the Home Manager release that your configuration is
       # compatible with. This helps avoid breakage when a new Home Manager release
@@ -101,7 +95,25 @@
         zola
         flutter
         cocoapods
-        jdk19_headless
+        jdk19_headless # Already installed from texlive
+        clang-tools_16
+        clang_16 # Already installed from wezterm
+        nix-tree
+        mktemp # The system mktemp breaks due to invalid flags for MacOS Version
+
+        # GUI apps should use brew, but prism needs some wrappers to detect java, etc
+        prismlauncher
+
+        (python311.withPackages
+          (ps: with ps; [
+            pip
+            meson
+            ninja
+          ]))
+
+        rust-bin.stable.latest.default
+        rust-analyzer
+
         # # It is sometimes useful to fine-tune packages, for example, by applying
         # # overrides. You can do that directly here, just don't forget the
         # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -131,34 +143,37 @@
         #   org.gradle.daemon.idletimeout=3600000
         # '';
       };
+      programs.sioyek.enable = true;
+      programs.sioyek.bindings = {
+        "zoom_in" = "J";
+        "zoom_out" = "K";
+      };
 
-      home.sessionVariables = {
+      programs.zsh.enable = true;
+      programs.zsh.sessionVariables = rec {
         XDG_CONFIG_HOME = "$HOME/.config";
         XDG_DATA_HOME = "$HOME/.local/share";
         XDG_CACHE_HOME = "$HOME/.local/cache";
         XDG_STATE_HOME = "$HOME/.local/state";
-        CARGO_HOME = "$XDG_DATA_HOME/cargo";
-        RUSTUP_HOME = "$XDG_DATA_HOME/rustup";
+        CARGO_HOME = "${XDG_DATA_HOME}/cargo";
+        RUSTUP_HOME = "${XDG_DATA_HOME}/rustup";
         STACK_XDG = "1";
         GHCUP_USE_XDG_DIRS = "1";
-        NPM_CONFIG_USERCONFIG = "$XDG_CONFIG_HOME/npm/npmrc";
-        LEIN_HOME = "$XDG_DATA_HOME/lein";
-        DOCKER_CONFIG = "$XDG_CONFIG_HOME/docker";
-        ANALYZER_STATE_LOCATION_OVERRIDE = "$XDG_CONFIG_HOME/dartServer";
+        NPM_CONFIG_USERCONFIG = "${XDG_CONFIG_HOME}/npm/npmrc";
+        LEIN_HOME = "${XDG_DATA_HOME}/lein";
+        DOCKER_CONFIG = "${XDG_CONFIG_HOME}/docker";
+        ANALYZER_STATE_LOCATION_OVERRIDE = "${XDG_CONFIG_HOME}/dartServer";
         EDITOR = "nvim";
         SCRIPTS = "$HOME/.local/scripts";
-        WGETRC = "$XDG_CONFIG_HOME/wgetrc";
-        NODE_REPL_HISTORY = "$XDG_DATA_HOME/node_repl_history";
+        WGETRC = "${XDG_CONFIG_HOME}/wgetrc";
+        NODE_REPL_HISTORY = "${XDG_DATA_HOME}/node_repl_history";
         LESSHISTFILE = "-";
         JUPYTER_PLATFORM_DIRS = "1";
-        PATH = "$HOME/.local/bin:$PATH:/Applications/Visual Studio Code - Insiders.app/Contents/Resources/app/bin";
+        PATH = "$HOME/.nix-profile/bin:$HOME/.local/bin:$PATH";
       };
-
-      programs.zsh.enable = true;
       programs.zsh.dotDir = ".config/zsh";
       programs.zsh.initExtra = ''
         #sh
-        . $CARGO_HOME/env
         source $HOME/.orbstack/shell/init.zsh 2>/dev/null || :
         eval $(/opt/homebrew/bin/brew shellenv)
         eval $(orbctl completion zsh)
@@ -173,12 +188,20 @@
         source "$SCRIPTS/iterm2_shell_integration.zsh"
         source "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh" 
         source "${pkgs.zsh-f-sy-h}/share/zsh/site-functions/F-Sy-H.plugin.zsh"
-        source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+        source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh 
+        # function code() {
+        #   if [ -f $1/flake.nix ]; then
+        #     nix develop path://$(readlink -f $1) -c code $1
+        #   else
+        #     code -e $1
+        #   fi
+        # } 
         #/sh
       '';
       # ^ This will pull the zsh plugins automatically. Alternatively, we could use zsh.antidote
 
       programs.zsh.shellAliases = {
+        gr = "cd $(git rev-parse --show-toplevel)";
         ls = "lsd -a --color=auto";
         tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
         wget = "wget --hsts-file=$XDG_CACHE_HOME/wget-hsts";
@@ -200,6 +223,10 @@
         h = "$HOME/OrbStack/arch/home/patrick";
         e = "$HOME/source/exercism";
       };
+
+      programs.direnv.enable = true;
+      programs.direnv.nix-direnv.enable = true;
+
 
       programs.wezterm.enable = true;
       programs.wezterm.extraConfig = ''
@@ -228,7 +255,6 @@
       programs.vscode.mutableExtensionsDir = false;
       programs.vscode.extensions = with pkgs.vscode-extensions; [
         vscodevim.vim
-        rust-lang.rust-analyzer
         serayuzgur.crates
         svelte.svelte-vscode
         ms-python.python
@@ -237,7 +263,6 @@
         christian-kohler.path-intellisense
         jnoortheen.nix-ide
         ms-vscode.live-server
-        github.vscode-github-actions
         gleam.gleam
         eamodio.gitlens
         github.copilot
@@ -245,10 +270,15 @@
         tamasfe.even-better-toml
         ms-python.black-formatter
         github.vscode-pull-request-github
-        dracula-theme.theme-dracula
+        # dracula-theme.theme-dracula
+        enkia.tokyo-night
         sumneko.lua
         nvarner.typst-lsp
         dart-code.flutter
+        llvm-vs-code-extensions.vscode-clangd
+        mkhl.direnv
+
+        rust-lang.rust-analyzer
         (pkgs.vscode-utils.buildVscodeExtension {
           name = "xxori-nix-embedded-langs-0.0.1";
           version = "0.0.1";
