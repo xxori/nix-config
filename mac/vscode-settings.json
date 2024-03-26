@@ -1,56 +1,72 @@
 {
-  "workbench.colorTheme": "Tokyo Night",
-  "editor.fontFamily": "BerkeleyMono Nerd Font, monospace",
-  "editor.fontLigatures": true,
-  "[json]": {
+  "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[python]": {
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.formatOnType": true
   },
   "[dart]": {
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
-    "editor.rulers": [80],
+    "editor.rulers": [
+      80
+    ],
     "editor.selectionHighlight": false,
     "editor.suggest.snippetsPreventQuickSuggestions": false,
     "editor.suggestSelection": "first",
     "editor.tabCompletion": "onlySnippets",
-    "editor.wordBasedSuggestions": false
+    "editor.wordBasedSuggestions": "off"
   },
-  "dart.debugExternalPackageLibraries": false,
-  "dart.debugSdkLibraries": false,
-  "editor.accessibilitySupport": "off",
-  "svelte.enable-ts-plugin": true,
-  "[typescript]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "[erlang]": {
+    "editor.defaultFormatter": "szTheory.erlang-formatter"
   },
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "diffEditor.ignoreTrimWhitespace": false,
-  "python.experiments.enabled": false,
-  "editor.inlayHints.enabled": "off",
-  "rust-analyzer.lens.implementations.enable": false,
-  "editor.tabCompletion": "on",
-  "nix.enableLanguageServer": true,
-  "github.copilot.enable": {
-    "*": true,
-    "plaintext": false,
-    "markdown": false,
-    "scminput": false
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "git.confirmSync": false,
   "[jsonc]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "typst-lsp.experimentalFormatterMode": "on",
-  "typst-lsp.exportPdf": "never",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.python",
+    "editor.formatOnType": true
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
   "[typst]": {
     "editor.defaultFormatter": "nvarner.typst-lsp"
-  }
+  },
+  "[uiua]": {
+    "editor.fontSize": 18
+  },
+  "clangd.path": "/Users/patrick/.nix-profile/bin/clangd",
+  "dart.debugExternalPackageLibraries": false,
+  "dart.debugSdkLibraries": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.accessibilitySupport": "off",
+  "editor.fontFamily": "BerkeleyMono Nerd Font, monospace",
+  "editor.fontLigatures": true,
+  "editor.inlayHints.enabled": "off",
+  "editor.tabCompletion": "on",
+  "git.confirmSync": false,
+  "github.copilot.enable": {
+    "*": false,
+    "markdown": false,
+    "plaintext": false,
+    "scminput": false
+  },
+  "haskell.manageHLS": "PATH",
+  "nix.enableLanguageServer": true,
+  "nix.serverPath": "nil",
+  "python.experiments.enabled": false,
+  "rust-analyzer.lens.implementations.enable": false,
+  "svelte.enable-ts-plugin": true,
+  "typst-lsp.experimentalFormatterMode": "on",
+  "typst-lsp.exportPdf": "never",
+  "workbench.colorTheme": "Tokyo Night",
+  "python.formatting.provider": "black"
 }
+

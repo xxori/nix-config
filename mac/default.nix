@@ -1,4 +1,4 @@
-{ pkgs, rust-overlay, ... }:
+{ inputs, outputs, pkgs, ... }:
 {
 
   services.nix-daemon.enable = true;
@@ -11,7 +11,9 @@
     trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
     trusted-substituters = [ "https://cache.nixos.org" "https://nix-community.cachix.org" ];
   };
-  nix.extraOptions = "experimental-features = nix-command flakes repl-flake";
+  nix.extraOptions = ''
+    experimental-features = nix-command flakes repl-flake
+  '';
   homebrew = {
     enable = true;
     onActivation.autoUpdate = false;
@@ -23,7 +25,6 @@
       "raycast"
       "prismlauncher"
       "orbstack"
-      "mactex-no-gui"
       "wineskin"
       "iina"
       "gpg-suite-no-mail"
@@ -53,7 +54,7 @@
 
       # Allow unfree software
       nixpkgs.config.allowUnfree = true;
-      nixpkgs.overlays = [ rust-overlay.overlays.default ];
+      nixpkgs.overlays = [ outputs.overlays.default ];
 
 
       # This value determines the Home Manager release that your configuration is
@@ -67,7 +68,8 @@
 
       # Some of these should probably be system packages...
       home.packages = with pkgs; [
-        rnix-lsp
+	nil
+	coq
         android-tools
         gleam
         exercism
@@ -78,41 +80,42 @@
         nodejs
         wget
         gh
-        hugo
         ncdu
         wget
-        fh
         fzf
         pure-prompt
         lsd
         zsh-autocomplete
         tmux
-        fd
-        mkcert
-        texlive.combined.scheme-medium
+        texlive.combined.scheme-full
         typst
         typst-fmt
         zola
         flutter
-        cocoapods
-        jdk19_headless # Already installed from texlive
-        clang-tools_16
-        clang_16 # Already installed from wezterm
+	clang
+	clang-tools
         nix-tree
         mktemp # The system mktemp breaks due to invalid flags for MacOS Version
-
-        # GUI apps should use brew, but prism needs some wrappers to detect java, etc
-        prismlauncher
-
+        tokei
+	ripgrep
+        uiua
+	man-pages
+	man-pages-posix
+	alejandra
+	hyperfine
+	pdftk
+	curl
+	zig
+	neofetch
+	git
+  texpresso
+	#ruff
+        
         (python311.withPackages
           (ps: with ps; [
-            pip
-            meson
-            ninja
+	  requests
+	  pip
           ]))
-
-        rust-bin.stable.latest.default
-        rust-analyzer
 
         # # It is sometimes useful to fine-tune packages, for example, by applying
         # # overrides. You can do that directly here, just don't forget the
@@ -142,6 +145,7 @@
         #   org.gradle.console=verbose
         #   org.gradle.daemon.idletimeout=3600000
         # '';
+        ".config/nix/empty-global-registry.json".text = ''{ "version": 2, "flakes": [] }'';
       };
       programs.sioyek.enable = true;
       programs.sioyek.bindings = {
@@ -158,6 +162,7 @@
         CARGO_HOME = "${XDG_DATA_HOME}/cargo";
         RUSTUP_HOME = "${XDG_DATA_HOME}/rustup";
         STACK_XDG = "1";
+        NU_CONFIG_DIR = "${XDG_CONFIG_HOME}/nushell";
         GHCUP_USE_XDG_DIRS = "1";
         NPM_CONFIG_USERCONFIG = "${XDG_CONFIG_HOME}/npm/npmrc";
         LEIN_HOME = "${XDG_DATA_HOME}/lein";
@@ -169,7 +174,7 @@
         NODE_REPL_HISTORY = "${XDG_DATA_HOME}/node_repl_history";
         LESSHISTFILE = "-";
         JUPYTER_PLATFORM_DIRS = "1";
-        PATH = "$HOME/.nix-profile/bin:$HOME/.local/bin:$PATH";
+        PATH = "$HOME/.nix-profile/bin:$HOME/.local/bin:/Users/patrick/source/cosmocc-3.3.2/bin:$PATH";
       };
       programs.zsh.dotDir = ".config/zsh";
       programs.zsh.initExtra = ''
@@ -186,9 +191,35 @@
         source "$(fzf-share)/completion.zsh"
         fi 
         source "$SCRIPTS/iterm2_shell_integration.zsh"
-        source "${pkgs.zsh-fzf-tab}/share/fzf-tab/fzf-tab.plugin.zsh" 
+        # source "$pkgs.zsh-fzf-tab/share/fzf-tab/fzf-tab.plugin.zsh" 
         source "${pkgs.zsh-f-sy-h}/share/zsh/site-functions/F-Sy-H.plugin.zsh"
-        source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh 
+        source ${pkgs.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
+        # Example - exercism download --track=haskell --exercise=space-age
+        alias _exercism=${pkgs.exercism}/bin/exercism
+        exercism() {
+          if [ "$1" = "download" ]; then
+            if [ "$(sed s/--track=//g <<< $2)" = "haskell" ]; then
+              pname=$(sed s/--exercise=//g <<< $3)
+              workdir=$(_exercism workspace)
+              if [ ! -d "$workdir/haskell/$pname" ]; then
+                _exercism $@ 2>&1 /dev/null || return 1
+              fi
+              cd $workdir/haskell/$pname
+              if [ -f flake.nix ]; then
+                echo flake already exists
+                return 1
+              fi
+              sed s/project-name/$pname/g < ../flake.nix.template > flake.nix
+              echo "resolver: lts-21.22\nsystem-ghc: true" > stack.yaml
+              echo "if ! has nix_direnv_version || ! nix_direnv_version 2.4.0; then\n    source_url "https://raw.githubusercontent.com/nix-community/nix-direnv/2.4.0/direnvrc" "sha256-XQzUAvL6pysIJnRJyR7uVpmUSZfc7LSgWQwq/4mBr1U="\nfi\nuse flake" > .envrc
+              direnv allow
+              stack setup
+              echo success
+            fi
+          else
+            _exercism $@
+          fi
+        }
         # function code() {
         #   if [ -f $1/flake.nix ]; then
         #     nix develop path://$(readlink -f $1) -c code $1
@@ -197,18 +228,22 @@
         #   fi
         # } 
         #/sh
+	export LDFLAGS="-L/opt/homebrew/opt/curl/lib"
+  	export CPPFLAGS="-I/opt/homebrew/opt/curl/include"
       '';
       # ^ This will pull the zsh plugins automatically. Alternatively, we could use zsh.antidote
 
       programs.zsh.shellAliases = {
         gr = "cd $(git rev-parse --show-toplevel)";
         ls = "lsd -a --color=auto";
+	norminette = "/usr/bin/python3 -m norminette";
         tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
         wget = "wget --hsts-file=$XDG_CACHE_HOME/wget-hsts";
         gpg = "gpg --homedir $XDG_DATA_HOME/gnupg";
         dr = "darwin-rebuild switch --flake ~s/nix-config/";
         nix-stray-roots = "nix-store --gc --print-roots | egrep -v '^(/nix/var|/run/\w+-system|\{memory)'";
-
+	mm = "/Users/patrick/mini-moulinette/mini-moul.sh";
+	francinette = "/Users/patrick/francinette/tester.sh";
       };
       programs.zsh.history.path = "$XDG_STATE_HOME/zsh/history";
 
@@ -222,6 +257,7 @@
         a = "/Applications";
         h = "$HOME/OrbStack/arch/home/patrick";
         e = "$HOME/source/exercism";
+        nc = "$HOME/source/nix-config";
       };
 
       programs.direnv.enable = true;
@@ -263,12 +299,9 @@
         christian-kohler.path-intellisense
         jnoortheen.nix-ide
         ms-vscode.live-server
-        gleam.gleam
         eamodio.gitlens
         github.copilot
-        github.copilot-chat
         tamasfe.even-better-toml
-        ms-python.black-formatter
         github.vscode-pull-request-github
         # dracula-theme.theme-dracula
         enkia.tokyo-night
@@ -277,8 +310,13 @@
         dart-code.flutter
         llvm-vs-code-extensions.vscode-clangd
         mkhl.direnv
-
+        haskell.haskell
+        justusadam.language-haskell
+        uiua-lang.uiua-vscode
         rust-lang.rust-analyzer
+	maximedenes.vscoq
+	visualstudioexptteam.vscodeintellicode
+	charliermarsh.ruff
         (pkgs.vscode-utils.buildVscodeExtension {
           name = "xxori-nix-embedded-langs-0.0.1";
           version = "0.0.1";
@@ -294,28 +332,28 @@
         })
       ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
         {
-          name = "vsliveshare";
-          publisher = "ms-vsliveshare";
-          version = "1.0.5892";
-          sha256 = "e/cJONR/4Lai18h7kHJU8UEn5yrUZHPoITAyZpLenTA=";
-        }
-        {
-          name = "prettier-sql-vscode";
-          publisher = "inferrinizzard";
-          version = "1.6.0";
-          sha256 = "l6pf/+uv8Bn4uDMX0CbzSjydTStr73uRY550Ad9wm7Q=";
-        }
-        {
-          name = "vscodeintellicode";
-          publisher = "VisualStudioExptTeam";
-          version = "1.2.30";
-          sha256 = "f2Gn+W0QHN8jD5aCG+P93Y+JDr/vs2ldGL7uQwBK4lE=";
+          name = "glas-vscode";
+          publisher = "maurobalbi";
+          version = "0.2.0";
+	  sha256 = "sha256-nivwnWbGam9LWT5q343o7r6/gm3WxLpM0kvkyeV7nZA=";
         }
         {
           name = "vscode-thunder-client";
           publisher = "rangav";
-          version = "2.15.3";
-          sha256 = "pn/wzehVQPk0Jck+1QFz508+5t8ToZiZ/UUiGwlB05M=";
+          version = "2.19.5";
+	  sha256 = "sha256-uBEdiW9tIGo9eYqc2Sf1geMFxVngYhwEg7khH6odwQs=";
+        }
+        {
+          name = "erlang-ls";
+          publisher = "erlang-ls";
+          version = "0.0.40";
+          sha256 = "sha256-HFlOig5UUsT+XX0h1dcRQ3mWRsASqvKTMpqqRhVpTAY=";
+        }
+        {
+          name = "erlang-formatter";
+          publisher = "sztheory";
+          version = "1.0.0";
+          sha256 = "sha256-mvs9DXClvZ9a3X4kagpijhI/B2dPXJNyQMC1mD4GP2c=";
         }
       ];
       programs.vscode.userSettings = builtins.fromJSON (builtins.readFile ./vscode-settings.json);
