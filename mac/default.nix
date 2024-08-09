@@ -14,6 +14,7 @@
   nix.extraOptions = ''
     experimental-features = nix-command flakes repl-flake
   '';
+  nix.registry.nixpkgs.flake = inputs.nixpkgs;
   homebrew = {
     enable = true;
     onActivation.autoUpdate = false;
@@ -69,9 +70,10 @@
       # Some of these should probably be system packages...
       home.packages = with pkgs; [
 	nil
-	coq
+	#coq
         android-tools
         gleam
+	#erlang
         exercism
         ffmpeg
         coreutils-prefixed
@@ -87,16 +89,12 @@
         lsd
         zsh-autocomplete
         tmux
-        texlive.combined.scheme-full
+        texlive.combined.scheme-medium
         typst
         typst-fmt
         zola
-        flutter
-	clang
-	clang-tools
         nix-tree
         mktemp # The system mktemp breaks due to invalid flags for MacOS Version
-        tokei
 	ripgrep
         uiua
 	man-pages
@@ -106,15 +104,18 @@
 	pdftk
 	curl
 	zig
-	neofetch
 	git
-  texpresso
+
+	#idris2
+	#opam
+
 	#ruff
         
         (python311.withPackages
           (ps: with ps; [
 	  requests
 	  pip
+	  black
           ]))
 
         # # It is sometimes useful to fine-tune packages, for example, by applying
@@ -228,8 +229,6 @@
         #   fi
         # } 
         #/sh
-	export LDFLAGS="-L/opt/homebrew/opt/curl/lib"
-  	export CPPFLAGS="-I/opt/homebrew/opt/curl/include"
       '';
       # ^ This will pull the zsh plugins automatically. Alternatively, we could use zsh.antidote
 
@@ -281,33 +280,31 @@
         config.color_scheme = "Tokyo Night"
         config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
         config.integrated_title_button_style = "MacOsNative"
-        config.window_background_opacity = 0.9
-
 
         return config
         --/lua
       '';
       programs.vscode.enable = true;
-      programs.vscode.mutableExtensionsDir = false;
+      programs.vscode.mutableExtensionsDir = true;
       programs.vscode.extensions = with pkgs.vscode-extensions; [
         vscodevim.vim
-        serayuzgur.crates
-        svelte.svelte-vscode
+        #serayuzgur.crates
+        #svelte.svelte-vscode
         ms-python.python
-        ms-python.vscode-pylance
+	ms-python.vscode-pylance
         esbenp.prettier-vscode
         christian-kohler.path-intellisense
         jnoortheen.nix-ide
         ms-vscode.live-server
         eamodio.gitlens
-        github.copilot
         tamasfe.even-better-toml
-        github.vscode-pull-request-github
+        #github.vscode-pull-request-github
         # dracula-theme.theme-dracula
         enkia.tokyo-night
         sumneko.lua
         nvarner.typst-lsp
         dart-code.flutter
+	dart-code.dart-code
         llvm-vs-code-extensions.vscode-clangd
         mkhl.direnv
         haskell.haskell
@@ -316,8 +313,15 @@
         rust-lang.rust-analyzer
 	maximedenes.vscoq
 	visualstudioexptteam.vscodeintellicode
-	charliermarsh.ruff
-        (pkgs.vscode-utils.buildVscodeExtension {
+	gleam.gleam
+	ms-vscode.cmake-tools
+	bierner.markdown-mermaid
+	ms-toolsai.jupyter
+	ocamllabs.ocaml-platform
+	badochov.ocaml-formatter
+	ms-vscode-remote.remote-ssh
+        ms-vscode-remote.remote-ssh-edit
+	(pkgs.vscode-utils.buildVscodeExtension {
           name = "xxori-nix-embedded-langs-0.0.1";
           version = "0.0.1";
           src = builtins.fetchurl {
@@ -331,30 +335,43 @@
           vscodeExtUniqueId = "xxori.nix-embedded-langs";
         })
       ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-        {
-          name = "glas-vscode";
-          publisher = "maurobalbi";
-          version = "0.2.0";
-	  sha256 = "sha256-nivwnWbGam9LWT5q343o7r6/gm3WxLpM0kvkyeV7nZA=";
-        }
+        #{
+        #  name = "glas-vscode";
+        #  publisher = "maurobalbi";
+        #  version = "0.2.3";
+	#  sha256 = "sha256-h5HCW7KlZZ7Xh26pKOSpN+RCNn/3nhqDgAUMJ5mNQwM=";
+        #}
         {
           name = "vscode-thunder-client";
           publisher = "rangav";
           version = "2.19.5";
 	  sha256 = "sha256-uBEdiW9tIGo9eYqc2Sf1geMFxVngYhwEg7khH6odwQs=";
         }
-        {
-          name = "erlang-ls";
-          publisher = "erlang-ls";
-          version = "0.0.40";
-          sha256 = "sha256-HFlOig5UUsT+XX0h1dcRQ3mWRsASqvKTMpqqRhVpTAY=";
-        }
-        {
-          name = "erlang-formatter";
-          publisher = "sztheory";
-          version = "1.0.0";
-          sha256 = "sha256-mvs9DXClvZ9a3X4kagpijhI/B2dPXJNyQMC1mD4GP2c=";
-        }
+	{
+	  name = "nand2tetris";
+	  publisher = "Throvn";
+	  version = "0.0.6";
+	  sha256 = "sha256-xQ5O0LomKiM/REFoMlxlRtUlGBI1fz4p8nKxiQRMo0o=";
+	}
+        #{
+        #  name = "erlang-ls";
+        #  publisher = "erlang-ls";
+        #  version = "0.0.40";
+        #  sha256 = "sha256-HFlOig5UUsT+XX0h1dcRQ3mWRsASqvKTMpqqRhVpTAY=";
+        #}
+        #{
+        #  name = "erlang-formatter";
+        #  publisher = "sztheory";
+        #  version = "1.0.0";
+        #  sha256 = "sha256-mvs9DXClvZ9a3X4kagpijhI/B2dPXJNyQMC1mD4GP2c=";
+        #}
+	#{
+	#  name = "qtvsctools";
+	#  publisher = "tonka3000";
+	#  version = "0.11.0";
+	#  sha256 = "sha256-/iJzPI4xJY+Vg9B/ah+zdErq988aXdN/UL1V3fR2nJ8=";
+	#}
+	  
       ];
       programs.vscode.userSettings = builtins.fromJSON (builtins.readFile ./vscode-settings.json);
 
