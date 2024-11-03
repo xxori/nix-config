@@ -9,7 +9,7 @@
     darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, home-manager, darwin } @ inputs:
+  outputs = { self, nixpkgs, flake-utils, home-manager, darwin} @ inputs:
     let
       inherit (self) outputs;
       systems = [ "aarch64-darwin" ];

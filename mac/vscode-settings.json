@@ -27,7 +27,7 @@
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[python]": {
-    "editor.defaultFormatter": "ms-python.python",
+    "editor.defaultFormatter": "charliermarsh.ruff",
     "editor.formatOnType": true
   },
   "[scss]": {
@@ -68,6 +68,7 @@
   "typst-lsp.exportPdf": "never",
   "workbench.colorTheme": "Tokyo Night",
   "python.formatting.provider": "black",
-  "python.analysis.typeCheckingMode": "basic"
+  "python.analysis.typeCheckingMode": "basic",
+  "nix.formatterPath": "alejandra"
 }
 

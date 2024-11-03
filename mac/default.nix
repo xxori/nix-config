@@ -2,6 +2,7 @@
 {
 
   services.nix-daemon.enable = true;
+  system.stateVersion = 5;
   programs.zsh.enable = true;
   nix.settings = {
     trusted-users = [ "root" "patrick" ];
@@ -11,8 +12,10 @@
     trusted-public-keys = [ "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=" "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
     trusted-substituters = [ "https://cache.nixos.org" "https://nix-community.cachix.org" ];
   };
+  nix.package = pkgs.lix;
+#nix.package = pkgs.nixVersions.latest;
   nix.extraOptions = ''
-    experimental-features = nix-command flakes repl-flake
+    experimental-features = nix-command flakes
   '';
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
   homebrew = {
@@ -26,8 +29,6 @@
       "raycast"
       "prismlauncher"
       "orbstack"
-      "wineskin"
-      "iina"
       "gpg-suite-no-mail"
       "obsidian"
       "steam"
@@ -73,15 +74,16 @@
 	#coq
         android-tools
         gleam
-	#erlang
+	erlang_27
+	rebar3
         exercism
         ffmpeg
         coreutils-prefixed
         neovim
         bun
         nodejs
+	pnpm
         wget
-        gh
         ncdu
         wget
         fzf
@@ -89,10 +91,9 @@
         lsd
         zsh-autocomplete
         tmux
-        texlive.combined.scheme-medium
+        texlive.combined.scheme-full
         typst
         typst-fmt
-        zola
         nix-tree
         mktemp # The system mktemp breaks due to invalid flags for MacOS Version
 	ripgrep
@@ -101,21 +102,22 @@
 	man-pages-posix
 	alejandra
 	hyperfine
-	pdftk
 	curl
-	zig
+	#zig
 	git
+	git-lfs
+
+	gh
 
 	#idris2
 	#opam
 
 	#ruff
         
-        (python311.withPackages
+        (python312.withPackages
           (ps: with ps; [
-	  requests
 	  pip
-	  black
+	  poetry-core
           ]))
 
         # # It is sometimes useful to fine-tune packages, for example, by applying
@@ -148,11 +150,11 @@
         # '';
         ".config/nix/empty-global-registry.json".text = ''{ "version": 2, "flakes": [] }'';
       };
-      programs.sioyek.enable = true;
-      programs.sioyek.bindings = {
-        "zoom_in" = "J";
-        "zoom_out" = "K";
-      };
+      #programs.sioyek.enable = true;
+      #programs.sioyek.bindings = {
+      #  "zoom_in" = "J";
+      #  "zoom_out" = "K";
+      #};
 
       programs.zsh.enable = true;
       programs.zsh.sessionVariables = rec {
@@ -237,6 +239,7 @@
         ls = "lsd -a --color=auto";
 	norminette = "/usr/bin/python3 -m norminette";
         tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
+	ghostty = "/Applications/Ghostty.app/Contents/MacOs/ghostty";
         wget = "wget --hsts-file=$XDG_CACHE_HOME/wget-hsts";
         gpg = "gpg --homedir $XDG_DATA_HOME/gnupg";
         dr = "darwin-rebuild switch --flake ~s/nix-config/";
@@ -263,27 +266,27 @@
       programs.direnv.nix-direnv.enable = true;
 
 
-      programs.wezterm.enable = true;
-      programs.wezterm.extraConfig = ''
-        --lua
-        local wezterm = require 'wezterm'
+      #programs.wezterm.enable = true;
+      #programs.wezterm.extraConfig = ''
+      #  --lua
+      #  local wezterm = require 'wezterm'
 
-        local config = {}
+      #  local config = {}
 
-        if wezterm.config_builder then
-        config = wezterm.config_builder()
-        end
+      #  if wezterm.config_builder then
+      #  config = wezterm.config_builder()
+      #  end
 
-        config.font = wezterm.font("BerkeleyMono Nerd Font")
-        config.font_size = 12.0
-        -- config.color_scheme = "synthwave"
-        config.color_scheme = "Tokyo Night"
-        config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
-        config.integrated_title_button_style = "MacOsNative"
+      #  config.font = wezterm.font("BerkeleyMono Nerd Font")
+      #  config.font_size = 12.0
+      #  -- config.color_scheme = "synthwave"
+      #  config.color_scheme = "Tokyo Night"
+      #  config.window_decorations = "INTEGRATED_BUTTONS|RESIZE"
+      #  config.integrated_title_button_style = "MacOsNative"
 
-        return config
-        --/lua
-      '';
+      #  return config
+      #  --/lua
+      #'';
       programs.vscode.enable = true;
       programs.vscode.mutableExtensionsDir = true;
       programs.vscode.extensions = with pkgs.vscode-extensions; [
@@ -293,6 +296,9 @@
         ms-python.python
 	ms-python.vscode-pylance
         esbenp.prettier-vscode
+	dbaeumer.vscode-eslint
+	bradlc.vscode-tailwindcss
+	gruntfuggly.todo-tree
         christian-kohler.path-intellisense
         jnoortheen.nix-ide
         ms-vscode.live-server
@@ -302,23 +308,25 @@
         # dracula-theme.theme-dracula
         enkia.tokyo-night
         sumneko.lua
-        nvarner.typst-lsp
+        #nvarner.typst-lsp
         dart-code.flutter
 	dart-code.dart-code
         llvm-vs-code-extensions.vscode-clangd
         mkhl.direnv
-        haskell.haskell
-        justusadam.language-haskell
+        #haskell.haskell
+        #justusadam.language-haskell
         uiua-lang.uiua-vscode
         rust-lang.rust-analyzer
-	maximedenes.vscoq
+	#maximedenes.vscoq
 	visualstudioexptteam.vscodeintellicode
 	gleam.gleam
-	ms-vscode.cmake-tools
-	bierner.markdown-mermaid
+	#ms-vscode.cmake-tools
+	#bierner.markdown-mermaid
 	ms-toolsai.jupyter
-	ocamllabs.ocaml-platform
-	badochov.ocaml-formatter
+	#ocamllabs.ocaml-platform
+	#badochov.ocaml-formatter
+	charliermarsh.ruff
+	ms-vsliveshare.vsliveshare
 	ms-vscode-remote.remote-ssh
         ms-vscode-remote.remote-ssh-edit
 	(pkgs.vscode-utils.buildVscodeExtension {
@@ -344,8 +352,8 @@
         {
           name = "vscode-thunder-client";
           publisher = "rangav";
-          version = "2.19.5";
-	  sha256 = "sha256-uBEdiW9tIGo9eYqc2Sf1geMFxVngYhwEg7khH6odwQs=";
+          version = "2.27.6";
+	  sha256 = "sha256-QZkIV5wW2NT16xPS+r/0qMEhC8YKdXdz1kKflrQ2tYw=";
         }
 	{
 	  name = "nand2tetris";
