@@ -5,7 +5,7 @@
   ...
 }: {
   nix.settings = {
-    trusted-users = ["root" "patrick"];
+    trusted-users = ["root" "patric"];
     allowed-users = ["@admin" "patrick"];
     auto-optimise-store = true;
     substituters = ["https://cache.nixos.org" "https://nix-community.cachix.org"];

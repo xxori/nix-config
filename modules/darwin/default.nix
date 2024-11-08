@@ -1,9 +1,9 @@
 {
-  inputs,
   outputs,
   pkgs,
   ...
 }: let
+  user = "patrick";
   sharedProgs = import ../shared/home-manager.nix {inherit pkgs;};
 in {
   services.nix-daemon.enable = true;
@@ -34,23 +34,23 @@ in {
     ];
   };
 
-  users.users.patrick = {
-    name = "patrick";
-    home = "/Users/patrick";
+  users.users.${user} = {
+    name = "${user}";
+    home = "/Users/${user}";
   };
 
   # home-manager.useGlobalPkgs = true;
   # home-manager.useUserPackages = true;
-  home-manager.users.patrick = {
+  home-manager.users.${user} = {
     config,
     pkgs,
     ...
   }: {
     # Home Manager needs a bit of information about you and the paths it should
     # manage.
-    home.username = "patrick";
-    home.homeDirectory = "/Users/patrick";
-    xdg.cacheHome = "/Users/patrick/.local/cache";
+    home.username = "${user}";
+    home.homeDirectory = "/Users/${user}";
+    xdg.cacheHome = "/Users/${user}/.local/cache";
 
     # This value determines the Home Manager release that your configuration is
     # compatible with. This helps avoid breakage when a new Home Manager release
@@ -95,6 +95,7 @@ in {
               // {
                 tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
                 ghostty = "/Applications/Ghostty.app/Contents/MacOs/ghostty";
+                dr = "darwin-rebuild switch --flake ~s/nix-config/";
               };
             dirHashes =
               sharedProgs.zsh.dirHashes
