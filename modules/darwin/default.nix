@@ -3,10 +3,9 @@
   outputs,
   pkgs,
   ...
-}: 
-let sharedProgs = import ../shared/home-manager.nix {inherit pkgs;};
-in
-{
+}: let
+  sharedProgs = import ../shared/home-manager.nix {inherit pkgs;};
+in {
   services.nix-daemon.enable = true;
   security.pam.enableSudoTouchIdAuth = true;
   system.stateVersion = 5;
@@ -14,7 +13,7 @@ in
   imports = [
     ../shared
   ];
-  
+
   homebrew = {
     enable = true;
     onActivation.autoUpdate = false;
@@ -71,29 +70,39 @@ in
 
     nixpkgs.config.allowUnfree = true;
     nixpkgs.overlays = [outputs.overlays.default];
-    
+
     #programs.sioyek.enable = true;
     #programs.sioyek.bindings = {
     #  "zoom_in" = "J";
     #  "zoom_out" = "K";
     #};
-    programs = sharedProgs // {
-    zsh = sharedProgs.zsh // {
-      initExtra = sharedProgs.zsh.initExtra + ''
-      source $HOME/.orbstack/shell/init.zsh 2>/dev/null || :
-      eval $(/opt/homebrew/bin/brew shellenv)
-      eval $(orbctl completion zsh)
-      fpath+=("$(brew --prefix)/share/zsh/site-functions")
-      '';
-      shellAliases = sharedProgs.zsh.shellAliases // {
-        tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
-        ghostty = "/Applications/Ghostty.app/Contents/MacOs/ghostty";
+    programs =
+      sharedProgs
+      // {
+        zsh =
+          sharedProgs.zsh
+          // {
+            initExtra =
+              sharedProgs.zsh.initExtra
+              + ''
+                source $HOME/.orbstack/shell/init.zsh 2>/dev/null || :
+                eval $(/opt/homebrew/bin/brew shellenv)
+                eval $(orbctl completion zsh)
+                fpath+=("$(brew --prefix)/share/zsh/site-functions")
+              '';
+            shellAliases =
+              sharedProgs.zsh.shellAliases
+              // {
+                tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
+                ghostty = "/Applications/Ghostty.app/Contents/MacOs/ghostty";
+              };
+            dirHashes =
+              sharedProgs.zsh.dirHashes
+              // {
+                ua = "$HOME/Applications";
+                a = "/Applications";
+              };
+          };
       };
-      dirHashes = sharedProgs.zsh.dirHashes // {
-             ua = "$HOME/Applications";
-      a = "/Applications"; 
-      };
-    };
-  };
   };
 }

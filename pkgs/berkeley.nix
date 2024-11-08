@@ -1,6 +1,4 @@
-{
-  stdenvNoCC,
-}:
+{stdenvNoCC}:
 stdenvNoCC.mkDerivation {
   pname = "berkeleymono-nerd";
   version = "0.0.0";

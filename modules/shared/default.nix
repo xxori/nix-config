@@ -1,5 +1,9 @@
-{pkgs,inputs,outputs,...}:
 {
+  pkgs,
+  inputs,
+  outputs,
+  ...
+}: {
   nix.settings = {
     trusted-users = ["root" "patrick"];
     allowed-users = ["@admin" "patrick"];
