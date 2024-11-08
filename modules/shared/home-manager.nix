@@ -21,7 +21,7 @@
       NODE_REPL_HISTORY = "${XDG_DATA_HOME}/node_repl_history";
       LESSHISTFILE = "-";
       JUPYTER_PLATFORM_DIRS = "1";
-      PATH = "$HOME/.nix-profile/bin:$HOME/.local/bin";
+      PATH = "$HOME/.nix-profile/bin:$HOME/.local/bin:$PATH";
     };
     dotDir = ".config/zsh";
     initExtra = ''

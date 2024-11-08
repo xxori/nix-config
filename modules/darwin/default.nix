@@ -10,6 +10,7 @@ in
   services.nix-daemon.enable = true;
   security.pam.enableSudoTouchIdAuth = true;
   system.stateVersion = 5;
+  programs.zsh.enable = true;
   imports = [
     ../shared
   ];
@@ -68,26 +69,31 @@ in
     # plain files is through 'home.file'.
     home.file = import ../shared/files.nix {};
 
+    nixpkgs.config.allowUnfree = true;
+    nixpkgs.overlays = [outputs.overlays.default];
+    
     #programs.sioyek.enable = true;
     #programs.sioyek.bindings = {
     #  "zoom_in" = "J";
     #  "zoom_out" = "K";
     #};
     programs = sharedProgs // {
-      zsh.initExtra = sharedProgs.zsh.initExtra ++ ''
+    zsh = sharedProgs.zsh // {
+      initExtra = sharedProgs.zsh.initExtra + ''
       source $HOME/.orbstack/shell/init.zsh 2>/dev/null || :
       eval $(/opt/homebrew/bin/brew shellenv)
       eval $(orbctl completion zsh)
       fpath+=("$(brew --prefix)/share/zsh/site-functions")
       '';
-      zsh.shellAliases = sharedProgs.zsh.shellAliases // {
+      shellAliases = sharedProgs.zsh.shellAliases // {
         tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
         ghostty = "/Applications/Ghostty.app/Contents/MacOs/ghostty";
       };
-      zsh.dirHashes = sharedProgs.zsh.dirHashes // {
+      dirHashes = sharedProgs.zsh.dirHashes // {
              ua = "$HOME/Applications";
       a = "/Applications"; 
       };
     };
+  };
   };
 }

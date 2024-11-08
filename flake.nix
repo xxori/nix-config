@@ -26,7 +26,7 @@
       system = "aarch64-darwin";
       modules = [
         home-manager.darwinModules.home-manager
-        ./modules/darwin/defaut.nix
+        ./modules/darwin/default.nix
       ];
       specialArgs = {inherit inputs outputs;};
     };
