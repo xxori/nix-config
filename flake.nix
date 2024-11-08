@@ -9,23 +9,26 @@
     darwin.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, flake-utils, home-manager, darwin} @ inputs:
-    let
-      inherit (self) outputs;
-      systems = [ "aarch64-darwin" ];
-      forAllSystems = nixpkgs.lib.genAttrs systems;
-    in
-    {
-      overlays = import ./overlays { inherit inputs; };
-      packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
-      darwinConfigurations."patrick-mac" = darwin.lib.darwinSystem {
-        system = "aarch64-darwin";
-        modules = [
-          home-manager.darwinModules.home-manager
-          ./mac/default.nix
-        ];
-        specialArgs = { inherit inputs outputs; };
-      };
-
+  outputs = {
+    self,
+    nixpkgs,
+    flake-utils,
+    home-manager,
+    darwin,
+  } @ inputs: let
+    inherit (self) outputs;
+    systems = ["aarch64-darwin" "x86_64-linux"];
+    forAllSystems = nixpkgs.lib.genAttrs systems;
+  in {
+    overlays = import ./overlays {inherit inputs;};
+    packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
+    darwinConfigurations."patrick-mac" = darwin.lib.darwinSystem {
+      system = "aarch64-darwin";
+      modules = [
+        home-manager.darwinModules.home-manager
+        ./modules/darwin/defaut.nix
+      ];
+      specialArgs = {inherit inputs outputs;};
     };
+  };
 }

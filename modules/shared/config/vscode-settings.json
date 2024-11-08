@@ -1,0 +1,77 @@
+{
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [
+      80
+    ],
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": "off"
+  },
+  "[erlang]": {
+    "editor.defaultFormatter": "szTheory.erlang-formatter"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnType": true
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typst]": {
+    "editor.defaultFormatter": "nvarner.typst-lsp"
+  },
+  "[uiua]": {
+    "editor.fontSize": 18
+  },
+  "clangd.path": "clangd",
+  "dart.debugExternalPackageLibraries": false,
+  "dart.debugSdkLibraries": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.accessibilitySupport": "off",
+  "editor.fontFamily": "BerkeleyMono Nerd Font, monospace",
+  "editor.fontLigatures": true,
+  "editor.inlayHints.enabled": "off",
+  "editor.tabCompletion": "on",
+  "git.confirmSync": false,
+  "github.copilot.enable": {
+    "*": false,
+    "markdown": false,
+    "plaintext": false,
+    "scminput": false
+  },
+  "haskell.manageHLS": "PATH",
+  "nix.enableLanguageServer": true,
+  "nix.serverPath": "nil",
+  "nix.formatterPath": "alejandra",
+  "python.experiments.enabled": false,
+  "rust-analyzer.lens.implementations.enable": false,
+  "svelte.enable-ts-plugin": true,
+  "typst-lsp.experimentalFormatterMode": "on",
+  "typst-lsp.exportPdf": "never",
+  "workbench.colorTheme": "Tokyo Night",
+  "python.formatting.provider": "black",
+  "python.analysis.typeCheckingMode": "basic",
+  "nix.serverSettings": {
+    "formatting.command": "alejandra"
+  }
+}
+

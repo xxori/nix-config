@@ -1,5 +1,4 @@
-{ inputs, ... }: {
+{inputs, ...}: {
   default = final: _prev:
-    import ../pkgs { pkgs = final; };
-
+    import ../pkgs {pkgs = final;};
 }
