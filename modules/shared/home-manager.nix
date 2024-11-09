@@ -42,7 +42,6 @@
       gr = "cd $(git rev-parse --show-toplevel)";
       ls = "lsd -a --color=auto";
       wget = "wget --hsts-file=$XDG_CACHE_HOME/wget-hsts";
-      gpg = "gpg --homedir $XDG_DATA_HOME/gnupg";
       nix-stray-roots = "nix-store --gc --print-roots | egrep -v '^(/nix/var|/run/\w+-system|\{memory)'";
     };
     history.path = "$XDG_STATE_HOME/zsh/history";

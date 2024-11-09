@@ -1,4 +1,5 @@
 {
+	inputs,
   outputs,
   pkgs,
   lib,
@@ -119,6 +120,7 @@ in {
       ++ (with pkgs; [
         vim
         firefox
+	#inputs.ghostty.packages.x86_64-linux.default
       ]);
     home.file = import ../shared/files.nix {};
     nixpkgs.config.allowUnfree = true;
@@ -127,6 +129,9 @@ in {
       sharedProgs
       // {
         gpg.enable = true;
+        git = sharedProgs.git // {
+          signing.key = "5582C6450991F8B1";
+        };
         zsh =
           sharedProgs.zsh
           // {
