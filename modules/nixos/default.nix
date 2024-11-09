@@ -123,7 +123,8 @@ in {
         mako
         killall
         swaybg
-        flameshot
+        arc-theme
+        epapirus-icon-theme
       ]);
     home.file = import ../shared/files.nix {};
     nixpkgs.config.allowUnfree = true;
