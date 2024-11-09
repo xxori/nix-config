@@ -1,5 +1,5 @@
 {
-	inputs,
+  inputs,
   outputs,
   pkgs,
   ...
@@ -105,7 +105,6 @@ in {
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = keys;
   };
-
   home-manager.users.${user} = {
     config,
     pkgs,
@@ -119,19 +118,49 @@ in {
       ++ (with pkgs; [
         vim
         firefox
-	#inputs.ghostty.packages.x86_64-linux.default
+        inputs.ghostty.packages.x86_64-linux.default
+        (pkgs.discord.override {withOpenASAR = true;})
+        mako
+        killall
+        swaybg
+        flameshot
       ]);
     home.file = import ../shared/files.nix {};
     nixpkgs.config.allowUnfree = true;
     nixpkgs.overlays = [outputs.overlays.default];
+    wayland.windowManager.river = {
+      enable = true;
+      xwayland.enable = true;
+      extraSessionVariables = {
+        MOZ_ENABLE_WAYLAND = "1";
+        NIXOS_OZONE_WL = "1";
+      };
+      extraConfig = ''
+        #sh
+        swaybg -i ~/wallpaper.jpg
+        #/sh
+      '';
+      settings = {
+        map = {
+          normal = {
+            "Mod4 E" = "exit";
+            "Mod4 F" = "spawn firefox";
+            "Mod4 Q" = "close";
+            "Mod4 T" = "spawn ghostty";
+          };
+        };
+      };
+    };
     programs =
       sharedProgs
       // {
         gpg.enable = true;
-        git = sharedProgs.git // {
-          signing.key = "5582C6450991F8B1";
-          signing.signByDefault = true;
-        };
+        git =
+          sharedProgs.git
+          // {
+            signing.key = "5582C6450991F8B1";
+            signing.signByDefault = true;
+          };
         zsh =
           sharedProgs.zsh
           // {
