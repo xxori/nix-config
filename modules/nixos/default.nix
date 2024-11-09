@@ -2,7 +2,6 @@
 	inputs,
   outputs,
   pkgs,
-  lib,
   ...
 }: let
   user = "patrick";
@@ -131,6 +130,7 @@ in {
         gpg.enable = true;
         git = sharedProgs.git // {
           signing.key = "5582C6450991F8B1";
+          signing.signByDefault = true;
         };
         zsh =
           sharedProgs.zsh
