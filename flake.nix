@@ -26,7 +26,15 @@
       system = "aarch64-darwin";
       modules = [
         home-manager.darwinModules.home-manager
-        ./modules/darwin/default.nix
+        ./modules/darwin
+      ];
+      specialArgs = {inherit inputs outputs;};
+    };
+    nixosConfigurations."patrick-pc" = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        home-manager.nixosModules.home-manager
+        ./modules/nixos
       ];
       specialArgs = {inherit inputs outputs;};
     };

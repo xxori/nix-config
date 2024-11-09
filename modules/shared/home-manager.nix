@@ -55,6 +55,17 @@
       nc = "$HOME/source/nix-config";
     };
   };
+  git = {
+    enable = true;
+    userEmail = "me@pthompson.xyz";
+    userName = "Patrick Thompson";
+    signing.key = "7FCAD018C5B82931";
+    signing.signByDefault = true;
+    lfs.enable = true;
+  };
+  gh = {
+    enable = true;
+  };
   direnv = {
     enable = true;
     nix-direnv.enable = true;
@@ -155,7 +166,7 @@
         #  sha256 = "sha256-/iJzPI4xJY+Vg9B/ah+zdErq988aXdN/UL1V3fR2nJ8=";
         #}
       ];
-    userSettings = builtins.fromJSON (builtins.readFile ./config/vscode-settings.json);
+    userSettings = builtins.fromJSON (builtins.readFile ./config/vscode-settings.json) // {"git.path" = "${pkgs.git}/bin/git";};
   };
   home-manager.enable = true;
 }

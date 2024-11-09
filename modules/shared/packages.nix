@@ -34,10 +34,6 @@ with pkgs; [
   hyperfine
   curl
   #zig
-  git
-  git-lfs
-
-  gh
 
   atkinson-hyperlegible
   (pkgs.nerdfonts.override {fonts = ["Recursive"];})
