@@ -1,5 +1,4 @@
 {
-  inputs,
   outputs,
   pkgs,
   ...
@@ -150,7 +149,6 @@ in {
         vim
         firefox
         spotify
-        inputs.ghostty.packages.x86_64-linux.default
         (pkgs.discord.override {withOpenASAR = true;})
         killall
         swaybg
