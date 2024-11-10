@@ -2,7 +2,6 @@
   inputs,
   outputs,
   pkgs,
-  config,
   ...
 }: let
   user = "patrick";

@@ -33,7 +33,7 @@ with pkgs; [
   alejandra
   hyperfine
   curl
-  #zig
+  zig
 
   atkinson-hyperlegible
   (pkgs.nerdfonts.override {fonts = ["Recursive"];})
