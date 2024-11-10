@@ -56,7 +56,7 @@
   };
   git = {
     enable = true;
-    userEmail = "me@pthompson.xyz";
+    userEmail = "ori@kek.church";
     userName = "Patrick Thompson";
     signing.key = "7FCAD018C5B82931";
     signing.signByDefault = true;

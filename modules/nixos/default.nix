@@ -221,6 +221,7 @@ in {
         git =
           sharedProgs.git
           // {
+            userEmail = "me@pthompson.xyz";
             signing.key = "5582C6450991F8B1";
             signing.signByDefault = true;
           };
