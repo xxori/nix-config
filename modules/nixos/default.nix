@@ -2,6 +2,7 @@
   inputs,
   outputs,
   pkgs,
+  config,
   ...
 }: let
   user = "patrick";
@@ -42,6 +43,7 @@ in {
     gnupg.agent.enable = true;
     dconf.enable = true;
     zsh.enable = true;
+    river.enable = true;
   };
 
   services = {
@@ -55,16 +57,20 @@ in {
     xserver = {
       enable = true;
       videoDrivers = ["nvidia"];
+      # displayManager.lightdm = {
+      #   enable = true;
+      #   greeters.slick.enable = true;
+      # };
       desktopManager.xfce.enable = true;
-      displayManager.lightdm = {
-        enable = true;
-        greeters.slick.enable = true;
-      };
       xkb = {
         layout = "us";
       };
     };
     displayManager.defaultSession = "xfce";
+    displayManager.ly.enable = true;
+    displayManager.ly.settings = {
+      animation = "matrix";
+    };
     pipewire = {
       enable = true;
       alsa.enable = true;
@@ -80,12 +86,12 @@ in {
   };
   hardware.nvidia = {
     modesetting.enable = true;
-    powerManagement.enable = false;
+    powerManagement.enable = true;
     powerManagement.finegrained = false;
     open = false;
     nvidiaSettings = true;
   };
-
+  
   hardware.pulseaudio.enable = false;
   hardware.graphics.enable = true;
   security.rtkit.enable = true;
@@ -101,7 +107,7 @@ in {
 
   users.users.${user} = {
     isNormalUser = true;
-    extraGroups = ["wheel" "docker"];
+    extraGroups = ["wheel" "docker" "video" "render"];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = keys;
   };
@@ -113,18 +119,49 @@ in {
     home.username = "${user}";
     home.homeDirectory = "/home/${user}";
     home.stateVersion = "23.05";
+    services = {
+      mako = {
+        enable = true;
+        defaultTimeout = 3000;
+      };
+      swayidle = {
+        enable = true;
+        systemdTarget = "river-session.target";
+        events = [
+          {
+            event = "before-sleep";
+            command = "${pkgs.swaylock}/bin/swaylock -fF -i ~/wallpaper.jpg";
+          }
+        ];
+        timeouts = [
+          {
+            timeout = 60;
+            command = "${pkgs.swaylock}/bin/swaylock -fF -i ~/wallpaper.jpg";
+          }
+          {
+            timeout = 180;
+            command = "${pkgs.systemd}/bin/systemctl suspend";
+          }
+        ];
+      };
+    };
     home.packages =
       (import ../shared/packages.nix {inherit pkgs;})
       ++ (with pkgs; [
         vim
         firefox
+        spotify
         inputs.ghostty.packages.x86_64-linux.default
         (pkgs.discord.override {withOpenASAR = true;})
-        mako
         killall
         swaybg
         arc-theme
         epapirus-icon-theme
+        slstatus
+        wmenu
+        dam
+        swaylock
+        swayidle
       ]);
     home.file = import ../shared/files.nix {};
     nixpkgs.config.allowUnfree = true;
@@ -137,9 +174,25 @@ in {
         NIXOS_OZONE_WL = "1";
       };
       extraConfig = ''
-        #sh
-        swaybg -i ~/wallpaper.jpg
-        #/sh
+        killall dam
+        killall swaybg
+        killall rivertile
+        riverctl spawn "swaybg -i ~/wallpaper.jpg"
+        riverctl spawn "slstatus -s | dam"
+        riverctl spawn rivertile
+        riverctl default-layout rivertile
+        riverctl send-layout-cmd rivertile "main-location left"
+        for i in $(seq 1 9)
+        do
+            tagmask=$((1 << ($i - 1)))
+            riverctl map normal Mod4               $i set-focused-tags    $tagmask
+            riverctl map normal Mod4+Shift         $i set-view-tags       $tagmask
+            riverctl map normal Mod4+Control       $i toggle-focused-tags $tagmask
+            riverctl map normal Mod4+Shift+Control $i toggle-view-tags    $tagmask
+        done
+        all_tags_mask=$(((1 << 32) - 1))
+        riverctl map normal Mod4       0 set-focused-tags $all_tags_mask
+        riverctl map normal Mod4+Shift 0 set-view-tags    $all_tags_mask
       '';
       settings = {
         map = {
@@ -147,7 +200,17 @@ in {
             "Mod4 E" = "exit";
             "Mod4 F" = "spawn firefox";
             "Mod4 Q" = "close";
-            "Mod4 T" = "spawn ghostty";
+            "Mod4 T" = "spawn foot";
+            "Mod4 J" = "focus-view previous";
+            "Mod4 K" = "focus-view next";
+            "Mod4+Shift J" = "swap previous";
+            "Mod4+Shift K" = "swap next";
+            "Mod4 Return" = "zoom";
+            "Mod4+Shift H" = "send-layout-cmd rivertile \"main-count +1\"";
+            "Mod4+Shift L" = "send-layout-cmd rivertile \"main-count -1\"";
+            "Mod4+Shift Space" = "toggle-float";
+            "Mod4 D" = "spawn wmenu-run";
+            "Mod4 L" = "spawn \"swaylock -fF -i ~/wallpaper.jpg\"";
           };
         };
       };
@@ -162,6 +225,48 @@ in {
             signing.key = "5582C6450991F8B1";
             signing.signByDefault = true;
           };
+        foot = {
+          enable = true;
+          settings = {
+            main = {
+              font = "RecMonoLinear Nerd Font Mono:size=12";
+              font-bold = "RecMonoLinear Nerd Font Mono:size=12";
+              font-italic = "RecMonoCasual Nerd Font Mono:size=12";
+              font-bold-italic = "RecMonoCasual Nerd Font Mono:size=12";
+              dpi-aware = "yes";
+              term = "xterm-256color";
+            };
+            cursor.color = "11111b f5e0dc";
+            colors = {
+              background = "1e1e2e";
+              foreground = "cdd6f4";
+              regular0 = "45475a";
+              regular1 = "f38ba8";
+              regular2 = "a6e3a1";
+              regular3 = "f9e2af";
+              regular4 = "89b4fa";
+              regular5 = "f5c2e7";
+              regular6 = "94e2d5";
+              regular7 = "bac2de";
+              bright0 = "585b70";
+              bright1 = "f38ba8";
+              bright2 = "a6e3a1";
+              bright3 = "f9e2af";
+              bright4 = "89b4fa";
+              bright5 = "f5c2e7";
+              bright6 = "94e2d5";
+              bright7 = "a6adc8";
+              # "16"="fab387";
+              # "17"="f5e0dc";
+              selection-foreground = "cdd6f4";
+              selection-background = "414356";
+              search-box-no-match = "11111b f38ba8";
+              search-box-match = "cdd6f4 313244";
+              jump-labels = "11111b fab387";
+              urls = "89b4fa";
+            };
+          };
+        };
         zsh =
           sharedProgs.zsh
           // {
