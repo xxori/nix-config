@@ -75,6 +75,7 @@
     extensions = with pkgs.vscode-extensions;
       [
         vscodevim.vim
+        ziglang.vscode-zig
         #serayuzgur.crates
         #svelte.svelte-vscode
         ms-python.python
@@ -135,16 +136,28 @@
         #  sha256 = "sha256-h5HCW7KlZZ7Xh26pKOSpN+RCNn/3nhqDgAUMJ5mNQwM=";
         #}
         {
+          name = "wasm-wasi-core";
+          publisher = "ms-vscode";
+          version = "1.0.2";
+          sha256 = "sha256-hrzPNPaG8LPNMJq/0uyOS8jfER1Q0CyFlwR42KmTz8g=";
+        }
+        {
           name = "vscode-thunder-client";
           publisher = "rangav";
           version = "2.27.6";
           sha256 = "sha256-QZkIV5wW2NT16xPS+r/0qMEhC8YKdXdz1kKflrQ2tYw=";
         }
         {
-          name = "nand2tetris";
-          publisher = "Throvn";
-          version = "0.0.6";
-          sha256 = "sha256-xQ5O0LomKiM/REFoMlxlRtUlGBI1fz4p8nKxiQRMo0o=";
+          name = "super";
+          publisher = "LorisCro";
+          version = "0.5.3";
+          sha256 = "sha256-SSeCNtwiOVk6ZrKvQ8U3eoTEJETVWyymrFOWrXj88Xs=";
+        }
+        {
+          name = "supermd";
+          publisher = "LorisCro";
+          version = "0.1.0";
+          sha256 = "sha256-oIoxxo+IS3TG/Ixv64C+ifTA7QoDur7BUkwifQYIzUE=";
         }
         #{
         #  name = "erlang-ls";
@@ -157,12 +170,6 @@
         #  publisher = "sztheory";
         #  version = "1.0.0";
         #  sha256 = "sha256-mvs9DXClvZ9a3X4kagpijhI/B2dPXJNyQMC1mD4GP2c=";
-        #}
-        #{
-        #  name = "qtvsctools";
-        #  publisher = "tonka3000";
-        #  version = "0.11.0";
-        #  sha256 = "sha256-/iJzPI4xJY+Vg9B/ah+zdErq988aXdN/UL1V3fR2nJ8=";
         #}
       ];
     userSettings = builtins.fromJSON (builtins.readFile ./config/vscode-settings.json) // {"git.path" = "${pkgs.git}/bin/git";};

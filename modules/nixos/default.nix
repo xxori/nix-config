@@ -89,7 +89,7 @@ in {
     open = false;
     nvidiaSettings = true;
   };
-  
+
   hardware.pulseaudio.enable = false;
   hardware.graphics.enable = true;
   security.rtkit.enable = true;
@@ -125,19 +125,19 @@ in {
       swayidle = {
         enable = true;
         systemdTarget = "river-session.target";
-        events = [
-          {
-            event = "before-sleep";
-            command = "${pkgs.swaylock}/bin/swaylock -fF -i ~/wallpaper.jpg";
-          }
-        ];
+        #events = [
+        #  {
+        #    event = "before-sleep";
+        #    command = "${pkgs.swaylock}/bin/swaylock -fF -i ~/wallpaper.jpg";
+        #  }
+        #];
         timeouts = [
+          #{
+          #  timeout = 60;
+          #  command = "${pkgs.swaylock}/bin/swaylock -fF -i ~/wallpaper.jpg";
+          #}
           {
-            timeout = 60;
-            command = "${pkgs.swaylock}/bin/swaylock -fF -i ~/wallpaper.jpg";
-          }
-          {
-            timeout = 180;
+            timeout = 300;
             command = "${pkgs.systemd}/bin/systemctl suspend";
           }
         ];
@@ -149,7 +149,7 @@ in {
         vim
         firefox
         spotify
-        (pkgs.discord.override {withOpenASAR = true;})
+        discord
         killall
         swaybg
         arc-theme
@@ -157,7 +157,6 @@ in {
         slstatus
         wmenu
         dam
-        swaylock
         swayidle
       ]);
     home.file = import ../shared/files.nix {};
@@ -174,7 +173,7 @@ in {
         killall dam
         killall swaybg
         killall rivertile
-        riverctl spawn "swaybg -i ~/wallpaper.jpg"
+        riverctl spawn "swaybg -m fill -i ~/wallpaper.jpg"
         riverctl spawn "slstatus -s | dam"
         riverctl spawn rivertile
         riverctl default-layout rivertile
@@ -208,6 +207,8 @@ in {
             "Mod4+Shift Space" = "toggle-float";
             "Mod4 D" = "spawn wmenu-run";
             "Mod4 L" = "spawn \"swaylock -fF -i ~/wallpaper.jpg\"";
+            "Mod4 P" = "focus-output next";
+            "Mod4+Shift P" = "send-to-output next";
           };
         };
       };
