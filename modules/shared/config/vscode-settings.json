@@ -14,9 +14,6 @@
     "editor.tabCompletion": "onlySnippets",
     "editor.wordBasedSuggestions": "off"
   },
-  "[erlang]": {
-    "editor.defaultFormatter": "szTheory.erlang-formatter"
-  },
   "[html]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -47,16 +44,13 @@
   "dart.debugSdkLibraries": false,
   "diffEditor.ignoreTrimWhitespace": false,
   "editor.accessibilitySupport": "off",
-  "editor.fontFamily": "BerkeleyMono Nerd Font, monospace",
+  "editor.fontFamily": "RecMonoLinear Nerd Font Mono, monospace",
   "editor.fontLigatures": true,
   "editor.inlayHints.enabled": "off",
   "editor.tabCompletion": "on",
   "git.confirmSync": false,
   "github.copilot.enable": {
-    "*": false,
-    "markdown": false,
-    "plaintext": false,
-    "scminput": false
+    "*": false
   },
   "haskell.manageHLS": "PATH",
   "nix.enableLanguageServer": true,
@@ -67,11 +61,17 @@
   "svelte.enable-ts-plugin": true,
   "typst-lsp.experimentalFormatterMode": "on",
   "typst-lsp.exportPdf": "never",
-  "workbench.colorTheme": "Tokyo Night",
+  "workbench.colorTheme": "Catppuccin Mocha",
   "python.formatting.provider": "black",
   "python.analysis.typeCheckingMode": "basic",
   "nix.serverSettings": {
     "formatting.command": "alejandra"
+  },
+  "zig.path": "",
+  "zig.zls.path": "",
+  "zig.initialSetupDone": true,
+  "[astro]": {
+    "editor.defaultFormatter": "astro-build.astro-vscode"
   }
 }
 

@@ -34,9 +34,10 @@ with pkgs; [
   hyperfine
   curl
   zig
+  zls
 
   atkinson-hyperlegible
-  (pkgs.nerdfonts.override {fonts = ["Recursive"];})
+  nerd-fonts.recursive-mono
   berkeley
 
   #idris2

@@ -71,7 +71,7 @@
   };
   vscode = {
     enable = true;
-    mutableExtensionsDir = false;
+    mutableExtensionsDir = true;
     extensions = with pkgs.vscode-extensions;
       [
         vscodevim.vim
@@ -83,18 +83,18 @@
         esbenp.prettier-vscode
         dbaeumer.vscode-eslint
         bradlc.vscode-tailwindcss
-        gruntfuggly.todo-tree
+	bbenoist.nix
         christian-kohler.path-intellisense
-        jnoortheen.nix-ide
-        ms-vscode.live-server
+        #ms-vscode.live-server
         eamodio.gitlens
         tamasfe.even-better-toml
         #github.vscode-pull-request-github
         # dracula-theme.theme-dracula
-        enkia.tokyo-night
-        sumneko.lua
+        #sumneko.lua
         #nvarner.typst-lsp
         dart-code.flutter
+	catppuccin.catppuccin-vsc
+	catppuccin.catppuccin-vsc-icons
         dart-code.dart-code
         llvm-vs-code-extensions.vscode-clangd
         mkhl.direnv
@@ -103,18 +103,19 @@
         uiua-lang.uiua-vscode
         rust-lang.rust-analyzer
         #maximedenes.vscoq
-        visualstudioexptteam.vscodeintellicode
+#        visualstudioexptteam.vscodeintellicode
         gleam.gleam
         #ms-vscode.cmake-tools
         #bierner.markdown-mermaid
         ms-toolsai.jupyter
-        #ocamllabs.ocaml-platform
         #badochov.ocaml-formatter
         charliermarsh.ruff
         ms-vsliveshare.vsliveshare
         ms-vscode-remote.remote-ssh
         ms-vscode-remote.remote-ssh-edit
+	astro-build.astro-vscode
         (pkgs.vscode-utils.buildVscodeExtension {
+          pname = "nix-embedded-langs";
           name = "xxori-nix-embedded-langs-0.0.1";
           version = "0.0.1";
           src = builtins.fetchurl {
@@ -129,12 +130,6 @@
         })
       ]
       ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-        #{
-        #  name = "glas-vscode";
-        #  publisher = "maurobalbi";
-        #  version = "0.2.3";
-        #  sha256 = "sha256-h5HCW7KlZZ7Xh26pKOSpN+RCNn/3nhqDgAUMJ5mNQwM=";
-        #}
         {
           name = "wasm-wasi-core";
           publisher = "ms-vscode";
@@ -159,18 +154,6 @@
           version = "0.1.0";
           sha256 = "sha256-oIoxxo+IS3TG/Ixv64C+ifTA7QoDur7BUkwifQYIzUE=";
         }
-        #{
-        #  name = "erlang-ls";
-        #  publisher = "erlang-ls";
-        #  version = "0.0.40";
-        #  sha256 = "sha256-HFlOig5UUsT+XX0h1dcRQ3mWRsASqvKTMpqqRhVpTAY=";
-        #}
-        #{
-        #  name = "erlang-formatter";
-        #  publisher = "sztheory";
-        #  version = "1.0.0";
-        #  sha256 = "sha256-mvs9DXClvZ9a3X4kagpijhI/B2dPXJNyQMC1mD4GP2c=";
-        #}
       ];
     userSettings = builtins.fromJSON (builtins.readFile ./config/vscode-settings.json) // {"git.path" = "${pkgs.git}/bin/git";};
   };
