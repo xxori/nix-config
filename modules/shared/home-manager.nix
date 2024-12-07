@@ -73,7 +73,7 @@
   };
   vscode = {
     enable = true;
-    mutableExtensionsDir = true;
+    mutableExtensionsDir = false;
     extensions = with pkgs.vscode-extensions;
       [
         vscodevim.vim
@@ -141,8 +141,8 @@
         {
           name = "vscode-thunder-client";
           publisher = "rangav";
-          version = "2.27.6";
-          sha256 = "sha256-QZkIV5wW2NT16xPS+r/0qMEhC8YKdXdz1kKflrQ2tYw=";
+          version = "2.32.3";
+	  sha256 = "sha256-NvGAbszItsZf71D6fI0/IOSAxKXUHjDJoQ58ROF/NAk=";
         }
         {
           name = "super";

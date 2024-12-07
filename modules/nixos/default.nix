@@ -1,5 +1,6 @@
 {
   outputs,
+  inputs,
   pkgs,
   ...
 }: let
@@ -10,6 +11,7 @@ in {
   imports = [
     ../shared
     ./hardware-configuration.nix
+    inputs.catppuccin.nixosModules.catppuccin
   ];
   system.stateVersion = "24.05";
   boot.loader.systemd-boot.enable = true;
@@ -136,10 +138,10 @@ in {
           #  timeout = 60;
           #  command = "${pkgs.swaylock}/bin/swaylock -fF -i ~/wallpaper.jpg";
           #}
-          {
-            timeout = 300;
-            command = "${pkgs.systemd}/bin/systemctl suspend";
-          }
+          #{
+          #  timeout = 300;
+          #  command = "${pkgs.systemd}/bin/systemctl suspend";
+          #}
         ];
       };
     };
