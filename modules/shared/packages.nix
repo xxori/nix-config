@@ -15,8 +15,6 @@ with pkgs; [
   pnpm
   wget
   ncdu
-  wget
-  fzf
   pure-prompt
   lsd
   zsh-autocomplete

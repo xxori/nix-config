@@ -21,7 +21,7 @@
       NODE_REPL_HISTORY = "${XDG_DATA_HOME}/node_repl_history";
       LESSHISTFILE = "-";
       JUPYTER_PLATFORM_DIRS = "1";
-      PATH = "$HOME/.nix-profile/bin:$HOME/.local/bin:$PATH";
+      PATH = "$HOME/.nix-profile/bin:$HOME/.local/bin:$HOME/.spicetify:$PATH";
     };
     dotDir = ".config/zsh";
     initExtra = ''
@@ -62,9 +62,11 @@
     signing.signByDefault = true;
     lfs.enable = true;
   };
-  gh = {
-    enable = true;
-  };
+  bat.enable = true;
+  btop.enable = true;
+  gh.enable = true;
+  gh-dash.enable = true;
+  fzf.enable = true;
   direnv = {
     enable = true;
     nix-direnv.enable = true;
@@ -83,7 +85,7 @@
         esbenp.prettier-vscode
         dbaeumer.vscode-eslint
         bradlc.vscode-tailwindcss
-	bbenoist.nix
+        bbenoist.nix
         christian-kohler.path-intellisense
         #ms-vscode.live-server
         eamodio.gitlens
@@ -93,8 +95,8 @@
         #sumneko.lua
         #nvarner.typst-lsp
         dart-code.flutter
-	catppuccin.catppuccin-vsc
-	catppuccin.catppuccin-vsc-icons
+        catppuccin.catppuccin-vsc
+        catppuccin.catppuccin-vsc-icons
         dart-code.dart-code
         llvm-vs-code-extensions.vscode-clangd
         mkhl.direnv
@@ -103,7 +105,7 @@
         uiua-lang.uiua-vscode
         rust-lang.rust-analyzer
         #maximedenes.vscoq
-#        visualstudioexptteam.vscodeintellicode
+        #        visualstudioexptteam.vscodeintellicode
         gleam.gleam
         #ms-vscode.cmake-tools
         #bierner.markdown-mermaid
@@ -113,7 +115,7 @@
         ms-vsliveshare.vsliveshare
         ms-vscode-remote.remote-ssh
         ms-vscode-remote.remote-ssh-edit
-	astro-build.astro-vscode
+        astro-build.astro-vscode
         (pkgs.vscode-utils.buildVscodeExtension {
           pname = "nix-embedded-langs";
           name = "xxori-nix-embedded-langs-0.0.1";

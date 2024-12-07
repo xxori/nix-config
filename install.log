@@ -1,0 +1,7 @@
+[00:36:32 2024-12-03] FETCHING Version 2.38.5
+[00:36:32 2024-12-03] CREATING /Users/patrick/.spicetify
+[00:36:32 2024-12-03] DOWNLOADING https://github.com/spicetify/cli/releases/download/v2.38.5/spicetify-2.38.5-darwin-arm64.tar.gz
+[00:36:34 2024-12-03] EXTRACTING /Users/patrick/.spicetify/spicetify.tar.gz
+[00:36:34 2024-12-03] SETTING EXECUTABLE PERMISSIONS TO /Users/patrick/.spicetify/spicetify
+[00:36:34 2024-12-03] REMOVING /Users/patrick/.spicetify/spicetify.tar.gz
+[00:36:34 2024-12-03] APPENDING /Users/patrick/.spicetify to PATH in /Users/patrick/.config/zsh/.zshrc

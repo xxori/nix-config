@@ -7,6 +7,8 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     darwin.url = "github:lnl7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
+    catppuccin.url = "github:catppuccin/nix";
+
 
     # ghostty = {
     # url = "git+ssh://git@github.com/ghostty-org/ghostty";
@@ -21,6 +23,7 @@
     flake-utils,
     home-manager,
     darwin,
+    catppuccin
     # ghostty,
   } @ inputs: let
     inherit (self) outputs;

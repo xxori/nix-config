@@ -1,4 +1,5 @@
 {
+  inputs,
   outputs,
   pkgs,
   ...
@@ -20,7 +21,6 @@ in {
     casks = [
       # GUI Apps
       "tailscale"
-      "discord"
       "qbittorrent"
       "raycast"
       "prismlauncher"
@@ -46,6 +46,12 @@ in {
     pkgs,
     ...
   }: {
+    imports = [
+      inputs.catppuccin.homeManagerModules.catppuccin
+    ];
+    catppuccin.flavor = "mocha";
+    catppuccin.enable = true;
+
     # Home Manager needs a bit of information about you and the paths it should
     # manage.
     home.username = "${user}";
@@ -62,7 +68,11 @@ in {
     home.stateVersion = "23.05"; # Please read the comment before changing.
 
     # Some of these should probably be system packages...
-    home.packages = import ../shared/packages.nix {inherit pkgs;};
+    home.packages =
+      (import ../shared/packages.nix {inherit pkgs;})
+      ++ (with pkgs; [
+        (discord.override {withOpenASAR = true;})
+      ]);
 
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
     # plain files is through 'home.file'.
