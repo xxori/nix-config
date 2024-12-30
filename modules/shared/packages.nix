@@ -38,6 +38,7 @@ with pkgs; [
   nerd-fonts.recursive-mono
   berkeley
 
+
   #idris2
   #opam
 
