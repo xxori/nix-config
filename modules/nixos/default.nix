@@ -14,6 +14,7 @@ in {
     inputs.catppuccin.nixosModules.catppuccin
   ];
   system.stateVersion = "24.05";
+  environment.systemPackages = [pkgs.ntfs3g];
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -104,10 +105,10 @@ in {
     enable = true;
     logDriver = "json-file";
   };
-
+  programs.adb.enable = true;
   users.users.${user} = {
     isNormalUser = true;
-    extraGroups = ["wheel" "docker" "video" "render"];
+    extraGroups = ["wheel" "docker" "video" "render" "kvm" "adbusers"];
     shell = pkgs.zsh;
     openssh.authorizedKeys.keys = keys;
   };
@@ -217,7 +218,7 @@ in {
     };
     programs =
       sharedProgs
-      // {
+      //{
         gpg.enable = true;
         git =
           sharedProgs.git
