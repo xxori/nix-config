@@ -1,18 +1,17 @@
 {pkgs, ...}:
 with pkgs; [
   nil
+  yazi
   #coq
+  elan
   android-tools
   gleam
   erlang_27
   rebar3
-  exercism
-  ffmpeg
+#  exercism
+#  ffmpeg
   coreutils-prefixed
   neovim
-  bun
-  nodejs
-  pnpm
   wget
   ncdu
   pure-prompt
@@ -31,13 +30,10 @@ with pkgs; [
   alejandra
   hyperfine
   curl
-  zig
-  zls
 
   atkinson-hyperlegible
   nerd-fonts.recursive-mono
   berkeley
-
 
   #idris2
   #opam
@@ -50,6 +46,7 @@ with pkgs; [
         pip
         poetry-core
       ]))
+
 
   # # It is sometimes useful to fine-tune packages, for example, by applying
   # # overrides. You can do that directly here, just don't forget the

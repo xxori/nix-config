@@ -8,7 +8,9 @@
     darwin.url = "github:lnl7/nix-darwin";
     darwin.inputs.nixpkgs.follows = "nixpkgs";
     catppuccin.url = "github:catppuccin/nix";
-
+    catppuccin.inputs.nixpkgs.follows = "nixpkgs";
+    nix-vscode-extensions.url = "github:nix-community/nix-vscode-extensions?ref=master";
+    nix-vscode-extensions.inputs.nixpkgs.follows="nixpkgs";
 
     # ghostty = {
     # url = "git+ssh://git@github.com/ghostty-org/ghostty";
@@ -23,7 +25,8 @@
     flake-utils,
     home-manager,
     darwin,
-    catppuccin
+    catppuccin,
+    nix-vscode-extensions,
     # ghostty,
   } @ inputs: let
     inherit (self) outputs;

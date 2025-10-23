@@ -7,9 +7,11 @@
   user = "patrick";
   sharedProgs = import ../shared/home-manager.nix {inherit pkgs;};
 in {
-  services.nix-daemon.enable = true;
-  security.pam.enableSudoTouchIdAuth = true;
+  #  services.nix-daemon.enable = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
+  ids.gids.nixbld = 30000;
   system.stateVersion = 5;
+  system.primaryUser = "patrick";
   programs.zsh.enable = true;
   imports = [
     ../shared
@@ -30,7 +32,7 @@ in {
       "steam"
       "calibre"
       "spotify"
-      "android-studio"
+#      "android-studio"
     ];
   };
 
@@ -47,10 +49,11 @@ in {
     ...
   }: {
     imports = [
-      inputs.catppuccin.homeManagerModules.catppuccin
+      inputs.catppuccin.homeModules.catppuccin
     ];
     catppuccin.flavor = "mocha";
     catppuccin.enable = true;
+    catppuccin.vscode.profiles.default.enable = false;
 
     # Home Manager needs a bit of information about you and the paths it should
     # manage.
@@ -71,7 +74,9 @@ in {
     home.packages =
       (import ../shared/packages.nix {inherit pkgs;})
       ++ (with pkgs; [
-        (discord.override {withOpenASAR = true;})
+        #        (discord.override {withOpenASAR = true;})
+        discord
+	ghostty-bin
       ]);
 
     # Home Manager is pretty good at managing dotfiles. The primary way to manage
@@ -92,8 +97,9 @@ in {
         zsh =
           sharedProgs.zsh
           // {
-            initExtra =
-              sharedProgs.zsh.initExtra
+	    dotDir = config.xdg.configHome + "/zsh";	
+            initContent =
+              sharedProgs.zsh.initContent
               + ''
                 source $HOME/.orbstack/shell/init.zsh 2>/dev/null || :
                 eval $(/opt/homebrew/bin/brew shellenv)
@@ -105,7 +111,7 @@ in {
               // {
                 tailscale = "/Applications/Tailscale.app/Contents/MacOS/Tailscale";
                 ghostty = "/Applications/Ghostty.app/Contents/MacOs/ghostty";
-                dr = "darwin-rebuild switch --flake ~s/nix-config/";
+                dr = "sudo darwin-rebuild switch --flake ~s/nix-config/";
               };
             dirHashes =
               sharedProgs.zsh.dirHashes

@@ -271,6 +271,7 @@ in {
         zsh =
           sharedProgs.zsh
           // {
+            dotDir = config.xdg.configHome + "/zsh";
             shellAliases = sharedProgs.zsh.shellAliases // {dr = "sudo nixos-rebuild switch --flake /home/patrick/source/nix-config";};
           };
       };
