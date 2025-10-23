@@ -1,4 +1,7 @@
 {
+  "[astro]": {
+    "editor.defaultFormatter": "astro-build.astro-vscode"
+  },
   "[css]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
@@ -49,30 +52,25 @@
   "editor.inlayHints.enabled": "off",
   "editor.tabCompletion": "on",
   "git.confirmSync": false,
+  "git.path": "/Users/patrick/.nix-profile/bin/git",
   "github.copilot.enable": {
     "*": false
   },
   "haskell.manageHLS": "PATH",
   "nix.enableLanguageServer": true,
-  "nix.serverPath": "nil",
   "nix.formatterPath": "alejandra",
-  "python.experiments.enabled": false,
+  "nix.serverPath": "nil",
+  "nix.serverSettings": {
+    "formatting.command": "alejandra"
+  },
   "rust-analyzer.lens.implementations.enable": false,
   "svelte.enable-ts-plugin": true,
   "typst-lsp.experimentalFormatterMode": "on",
   "typst-lsp.exportPdf": "never",
   "workbench.colorTheme": "Catppuccin Mocha",
   "workbench.iconTheme": "catppuccin-mocha",
-  "python.formatting.provider": "black",
-  "python.analysis.typeCheckingMode": "basic",
-  "nix.serverSettings": {
-    "formatting.command": "alejandra"
-  },
   "zig.path": "",
   "zig.zls.path": "",
-  "zig.initialSetupDone": true,
-  "[astro]": {
-    "editor.defaultFormatter": "astro-build.astro-vscode"
-  }
+  "lean4.alwaysAskBeforeInstallingLeanVersions": true
 }
 
